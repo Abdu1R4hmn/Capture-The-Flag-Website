@@ -1,15 +1,19 @@
 package com.example.springboot.User;
 
+import com.example.springboot.Exceptions.UserAlreadyExistsException;
+import com.example.springboot.Exceptions.UserNotFoundException;
+import com.example.springboot.Exceptions.UserServiceLogicException;
+import com.example.springboot.Responses.ApiResponseDto;
+import com.example.springboot.Responses.ApiResponseStatus;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.server.ResponseStatusException;
 
+
+import javax.management.relation.Role;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Service
 public class UserService {
@@ -23,74 +27,115 @@ public class UserService {
     }
 
     //   DTO
-    private UserDTO entityToDto(User user) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setUsername(user.getUsername());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setPassword(user.getPassword());
-
-        return userDTO;
+    private UserResponseDto convertToDto(User user) {
+        return new UserResponseDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole(), user.getRegDateAndTime());
     }
 
-    //   Check Edits
-    public void checkEdit(User user, User theUser) {
-//        Username can't be the same when editing, but can be NULL aka unchanged.
-        if (!Objects.equals(user.getUsername(), theUser.getUsername())) {
-            theUser.setUsername(user.getUsername());
-        } else {
-            throw new IllegalStateException("Username is the same or empty, please use a different name");
-        }
-
-        if (user.getEmail() != null && !Objects.equals(user.getEmail(), theUser.getEmail())) {
-            theUser.setEmail(user.getEmail());
-        } else {
-            throw new IllegalStateException("Email is the same or empty, please use a different Email");
-        }
-
-        if (user.getPassword() != null && !Objects.equals(user.getPassword(), theUser.getPassword())) {
-            theUser.setPassword(user.getPassword());
-        } else {
-            throw new IllegalStateException("Password is the same or empty, please use a different password");
-        }
-
-        if (!Objects.equals(user.getRole(), theUser.getRole())) {
-            theUser.setRole(user.getRole());
-        } else {
-            throw new IllegalStateException("Role is the same or empty, please use a different Role");
-        }
-    }
 
 //  CRUD
 
     //  GETs All Users Data (for Admin).
-    public List<User> getAllUsersData() {
-        return userRepo.findAll();
+    public ResponseEntity<ApiResponseDto<List<UserResponseDto>>> getAllUsers() throws UserServiceLogicException {
+
+        try {
+//        Get all users
+            List<User> users = userRepo.findAll();
+
+//        Convert users to Dtos
+            List<UserResponseDto> userDtos = users.stream().map(this::convertToDto).toList();
+
+//        wrap the Dtos in the ApiResponseDto
+            ApiResponseDto<List<UserResponseDto>> wrappedDtos = new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), userDtos);
+
+            return ResponseEntity.ok(wrappedDtos);
+
+        } catch (Exception e) {
+            throw new UserServiceLogicException();
+        }
     }
 
     //  GET a specific User by id.
-    public List<UserDTO> getUser(long id) {
-        Optional<User> user = userRepo.findById(id);
-        return user.stream().map(this::entityToDto).collect(Collectors.toList());
+    public ResponseEntity<ApiResponseDto<UserResponseDto>> getUser(long id) throws UserNotFoundException, UserServiceLogicException {
+        try {
+
+//        Get the user
+            User user = userRepo.findById(id).orElseThrow(() -> new UserNotFoundException("User Not Found With The Id " + id));
+
+//        Convert user to Dto
+            UserResponseDto userDto = convertToDto(user);
+
+//        wrap the Dto in the ApiResponseDto
+            ApiResponseDto<UserResponseDto> wrappedDto = new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), userDto);
+
+            return ResponseEntity.ok(wrappedDto);
+
+        } catch (UserNotFoundException e) {
+            throw new UserNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new UserServiceLogicException();
+        }
     }
 
     //   POST/Add User.
-    public User addUser(User user) {
-        return userRepo.save(user);
+    public ResponseEntity<ApiResponseDto<?>> addUser(UserRequestDto newUser) throws UserAlreadyExistsException, UserServiceLogicException {
+        try {
+
+            if (userRepo.findByEmail(newUser.getEmail()) != null) {
+                throw new UserAlreadyExistsException("Registration failed: User already exists with email " + newUser.getEmail());
+            }
+
+            User user = new User(newUser.getUsername(), newUser.getEmail(), newUser.getPassword() /*, role*/);
+
+            userRepo.save(user);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), "New user account has been successfully created!"));
+
+        } catch (UserAlreadyExistsException e) {
+            throw new UserAlreadyExistsException(e.getMessage());
+        } catch (Exception e) {
+            throw new UserServiceLogicException();
+        }
+
     }
 
     //   EDIT/Put User.
-    public void editUser(User user, long id) {
-        User theUser = Optional.ofNullable(userRepo.findById(id)
-                .orElseThrow(() -> new IllegalStateException("User Not Found"))).orElse(null);
-//                .orElseThrow(
-//                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(NOT_FOUND,id)));
+    public ResponseEntity<ApiResponseDto<?>> updateUser(UserRequestDto user, long id) throws UserNotFoundException, UserServiceLogicException {
+        try {
 
-        checkEdit(user, theUser);
-        userRepo.save(theUser);
+            User orginalUser = userRepo.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with id " + id));
+
+            orginalUser.setUsername(user.getUsername());
+            orginalUser.setEmail(user.getEmail());
+            orginalUser.setPassword(user.getPassword());
+            orginalUser.setRole(user.getRole());
+
+            userRepo.save(orginalUser);
+
+            return ResponseEntity.ok(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), "User account updated successfully!"));
+
+        } catch (UserNotFoundException e) {
+            throw new UserNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new UserServiceLogicException();
+        }
     }
 
     //   Delete User.
-    public void deleteUser(long id) {
-        userRepo.deleteById(id);
+    public ResponseEntity<ApiResponseDto<?>> deleteUser(long id) throws UserNotFoundException, UserServiceLogicException {
+
+        try {
+
+            User orginalUser = userRepo.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with id " + id));
+
+            userRepo.deleteById(id);
+
+            return ResponseEntity.ok(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), "User account deleted successfully!"));
+
+        } catch (UserNotFoundException e) {
+            throw new UserNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new UserServiceLogicException();
+        }
+
     }
 }

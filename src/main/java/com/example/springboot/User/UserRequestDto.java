@@ -4,14 +4,18 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import javax.management.relation.Role;
+
 @Data
-public class UserDTO {
+@AllArgsConstructor
+public class UserRequestDto {
 
     @NotBlank(message = "Username is required!")
     @Size(min = 3, message = "Username must be at least 3 Characters!")
-    @Size(min = 20, message = "Username must be at most 20 Characters!")
+    @Size(max = 20, message = "Username must be at most 20 Characters!")
     private String username;
 
     @NotBlank(message = "Email is required!")
@@ -19,7 +23,11 @@ public class UserDTO {
     private String email;
 
     @NotBlank(message = "Password is required!")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])$",
-            message = "Password must contain 1 Uppercase letter, 1 Lowercase letter and 1 number")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$",
+            message = "Password must contain 1 Uppercase letter, 1 Lowercase letter and 1 Number")
+    @Size(min = 8, message = "Password must contain at least 8 characters!")
     private String password;
+
+
+    private Role role;
 }
