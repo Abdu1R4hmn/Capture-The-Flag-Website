@@ -14,12 +14,16 @@ import java.util.List;
 @NoArgsConstructor
 public class Category {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String type;
 
     @OneToMany(mappedBy = "category" ,fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     private List<Challenge> challenge;
 
+    public Category(String type){
+        this.type = type;
+    }
 }
 
 

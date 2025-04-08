@@ -15,41 +15,47 @@ import java.util.List;
 @RequestMapping("api/user")
 public class UserController {
 
-//  Variables
+    //  Variables
     private final UserService userService;
 
-//  Constructor
+    //  Constructor
     public UserController(UserService userService){
         this.userService = userService;
     }
 
 //    CRUD
 
-//  GETs All Users Data (for Admin).
+    //  GETs All Users Data (for Admin).
     @GetMapping(path = "get/all")
     public ResponseEntity<ApiResponseDto<List<UserResponseDto>>> getAllUsersData() throws UserServiceLogicException {
         return userService.getAllUsers();
     }
 
-//  GET a specific User by id.
+    //  GET a specific User by id.
     @GetMapping(path = "get/{id}")
     public ResponseEntity<ApiResponseDto<UserResponseDto>> getUser(@PathVariable("id")long id) throws UserNotFoundException, UserServiceLogicException {
         return userService.getUser(id);
     }
 
-//   POST/Add User.
-    @PostMapping(path = "add")
+    //  GET a specific User by Email.
+    @GetMapping(path = "get/email/{email}")
+    public ResponseEntity<ApiResponseDto<UserResponseDto>> getUserEmail(@PathVariable("email")String email) throws UserNotFoundException, UserServiceLogicException {
+        return userService.getUser(email);
+    }
+
+    //   POST/Add User.
+    @PostMapping(path = "post")
     public ResponseEntity<ApiResponseDto<?>> addUser (@Valid @RequestBody UserRequestDto user) throws UserAlreadyExistsException, UserServiceLogicException {
         return userService.addUser(user);
     }
 
-//   Edit User.
+    //   Edit User.
     @PutMapping(path = "edit/{id}")
     public ResponseEntity<ApiResponseDto<?>> updateUser(@RequestBody UserRequestDto user,@PathVariable("id")long id) throws UserNotFoundException, UserServiceLogicException {
         return userService.updateUser(user, id);
     }
 
-//   Delete User.
+    //   Delete User.
     @DeleteMapping(path = "delete/{id}")
     public ResponseEntity<ApiResponseDto<?>> deleteUser(@PathVariable("id")long id)throws UserNotFoundException, UserServiceLogicException{
         return userService.deleteUser(id);

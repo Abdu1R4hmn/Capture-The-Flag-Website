@@ -30,7 +30,6 @@ public class UserService {
         return new UserResponseDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole(), user.getRegDateAndTime());
     }
 
-
 //  CRUD
 
     //  GETs All Users Data (for Admin).
@@ -59,6 +58,32 @@ public class UserService {
 
 //        Get the user
             User user = userRepo.findById(id).orElseThrow(() -> new UserNotFoundException("User Not Found With The Id " + id));
+
+//        Convert user to Dto
+            UserResponseDto userDto = convertToDto(user);
+
+//        wrap the Dto in the ApiResponseDto
+            ApiResponseDto<UserResponseDto> wrappedDto = new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), userDto);
+
+            return ResponseEntity.ok(wrappedDto);
+
+        } catch (UserNotFoundException e) {
+            throw new UserNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new UserServiceLogicException();
+        }
+    }
+
+    //  GET a specific User by Email.
+    public ResponseEntity<ApiResponseDto<UserResponseDto>> getUser(String email) throws UserNotFoundException, UserServiceLogicException {
+        try {
+
+            if (userRepo.findByEmail(email) == null) {
+                throw new UserNotFoundException("User Not Found With The Id " + email);
+            }
+
+//        Get the user
+            User user = userRepo.findByEmail(email);
 
 //        Convert user to Dto
             UserResponseDto userDto = convertToDto(user);
