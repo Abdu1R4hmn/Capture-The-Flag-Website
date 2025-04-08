@@ -3,7 +3,7 @@ package com.example.springboot.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.management.relation.Role;
+import com.example.springboot.Role.Role;
 import java.time.LocalDateTime;
 
 @Data

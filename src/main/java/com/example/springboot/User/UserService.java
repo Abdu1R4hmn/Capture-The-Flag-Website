@@ -10,9 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
-import javax.management.relation.Role;
+import com.example.springboot.Role.Role;
 import java.util.List;
-import java.util.Objects;
 
 
 @Service
@@ -84,7 +83,7 @@ public class UserService {
                 throw new UserAlreadyExistsException("Registration failed: User already exists with email " + newUser.getEmail());
             }
 
-            User user = new User(newUser.getUsername(), newUser.getEmail(), newUser.getPassword() /*, role*/);
+            User user = new User(newUser.getUsername(), newUser.getEmail(), newUser.getPassword());
 
             userRepo.save(user);
 

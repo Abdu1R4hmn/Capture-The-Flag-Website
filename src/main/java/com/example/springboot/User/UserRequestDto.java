@@ -1,16 +1,19 @@
 package com.example.springboot.User;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.management.relation.Role;
+import com.example.springboot.Role.Role;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserRequestDto {
 
     @NotBlank(message = "Username is required!")
