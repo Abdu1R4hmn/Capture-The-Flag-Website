@@ -1,6 +1,8 @@
 package com.example.springboot.Challenge;
 
 
+import com.example.springboot.Category.Category;
+import jakarta.websocket.server.PathParam;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +19,7 @@ public class ChallengeController {
         this.challengeService =  challengeService;
     }
 
+
 //    CRUD
 
     //    GET challenge ALL.
@@ -25,17 +28,17 @@ public class ChallengeController {
         return challengeService.getChallengeAll();
     }
 
-//    //    GET all challenge by Difficulty.
-//    @GetMapping("/get/{id}")
-//    public List<ChallengeDTO> getChallengeDifficulty(){
-//        return ChallengeService.getChallenge();
-//    }
-//
-//    //    GET all challenge in Category.
-//    @GetMapping("/get/type/{type}")
-//    public List<ChallengeDTO> getChallengeCategory(){
-//        return challengeService.getChallengeCategory();
-//    }
+    //    GET all challenge by Difficulty.
+    @GetMapping("/get/difficulty/{diff}")
+    public List<ChallengeDTO> getChallengeDifficulty(@PathVariable("diff") Difficulty diff){
+        return challengeService.getChallengeDifficulty(diff);
+    }
+
+    //    GET all challenge in Category.
+    @GetMapping("/get/category/{cat}")
+    public List<ChallengeDTO> getChallengeCategory(@PathVariable("cat") Category cat){
+        return challengeService.getChallengeCategory(cat);
+    }
 
     //    Post challenge.
     @PostMapping("/post/{catid}")
@@ -43,17 +46,17 @@ public class ChallengeController {
         challengeService.postChallenge(challengeDto,catid);
     }
 
-//    //    Edit challenge
-//    @PutMapping("/put/{id}")
-//    public void putChallenge(@RequestBody ChallengeDTO challengeDto,@PathVariable("id") long id){
-//        challengeService.putChallenge(challengeDto,id);
-//    }
-//
-//    //    Delete challenge
-//    @DeleteMapping("/delete/{id}")
-//    public void deleteChallenge (@PathVariable("id") long id){
-//        challengeService.deleteChallenge(id);
-//    }
+    //    Edit challenge
+    @PutMapping("/put/{id}")
+    public void putChallenge(@RequestBody ChallengeDTO challengeDto,@PathVariable("id") long id){
+        challengeService.putChallenge(challengeDto,id);
+    }
+
+    //    Delete challenge
+    @DeleteMapping("/delete/{id}")
+    public void deleteChallenge (@PathVariable("id") long id){
+        challengeService.deleteChallenge(id);
+    }
 }
 
 

@@ -1,6 +1,5 @@
-package com.example.springboot.Responses;
+package com.example.springboot.responses;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

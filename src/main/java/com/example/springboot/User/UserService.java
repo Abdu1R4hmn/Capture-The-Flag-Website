@@ -1,16 +1,15 @@
 package com.example.springboot.User;
 
-import com.example.springboot.Exceptions.UserAlreadyExistsException;
-import com.example.springboot.Exceptions.UserNotFoundException;
-import com.example.springboot.Exceptions.UserServiceLogicException;
-import com.example.springboot.Responses.ApiResponseDto;
-import com.example.springboot.Responses.ApiResponseStatus;
+import com.example.springboot.exceptions.UserAlreadyExistsException;
+import com.example.springboot.exceptions.UserNotFoundException;
+import com.example.springboot.exceptions.UserServiceLogicException;
+import com.example.springboot.responses.ApiResponseDto;
+import com.example.springboot.responses.ApiResponseStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
-import com.example.springboot.Role.Role;
 import java.util.List;
 
 

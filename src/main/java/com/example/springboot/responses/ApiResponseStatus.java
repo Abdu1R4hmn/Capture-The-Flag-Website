@@ -1,4 +1,4 @@
-package com.example.springboot.Responses;
+package com.example.springboot.responses;
 
 public enum ApiResponseStatus {
     SUCCESS,

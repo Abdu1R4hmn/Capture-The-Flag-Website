@@ -1,4 +1,4 @@
-package com.example.springboot.Exceptions;
+package com.example.springboot.exceptions;
 
 // This exception serves as a generic exception for any unexpected errors or business logic violations that occur within the user service layer.
 public class UserServiceLogicException extends Exception{

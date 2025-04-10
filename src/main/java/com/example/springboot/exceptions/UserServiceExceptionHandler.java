@@ -1,12 +1,11 @@
-package com.example.springboot.Exceptions;
+package com.example.springboot.exceptions;
 
-import com.example.springboot.Responses.ApiResponseDto;
-import com.example.springboot.Responses.ApiResponseStatus;
+import com.example.springboot.responses.ApiResponseDto;
+import com.example.springboot.responses.ApiResponseStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.ArrayList;

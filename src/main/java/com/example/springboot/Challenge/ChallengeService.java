@@ -5,6 +5,9 @@ import com.example.springboot.Category.CategoryDTO;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import com.example.springboot.Category.CategoryRepo;
+import com.example.springboot.Challenge.Challenge;
+import com.example.springboot.Challenge.ChallengeDTO;
+
 
 import java.util.List;
 
@@ -21,11 +24,8 @@ public class ChallengeService {
         this.categoryRepo = categoryRepo;
     }
 
-//    DTOs
+    //    DTOs
     public ChallengeDTO convertToDto(Challenge challenge){
-        Category category = challenge.getCategory();
-        CategoryDTO categoryDto = new CategoryDTO(category.getType());
-
         return new ChallengeDTO(challenge.getName(),challenge.getDescription(),challenge.getDifficulty(),challenge.getFlag(),challenge.getChallengeImage(),challenge.getCategory());
     }
     public Challenge convertToEntity(ChallengeDTO challengeDto){
@@ -35,12 +35,27 @@ public class ChallengeService {
 
 //    CRUD
 
-    //    Get ALl
+    //    GET All
     public List<ChallengeDTO> getChallengeAll() {
         List<ChallengeDTO> challenges = challengeRepo.findAll().stream().map(this::convertToDto).toList();
         return challenges;
     }
 
+    //    GET Difficulty
+    public List<ChallengeDTO> getChallengeDifficulty(Difficulty diff) {
+
+        List<Challenge> challenges = challengeRepo.findAllByDifficulty(diff);
+
+        return challenges.stream().map(this::convertToDto).toList();
+    }
+
+    //    GET Category
+    public List<ChallengeDTO> getChallengeCategory(Category category) {
+
+        List<Challenge> challenges = challengeRepo.findAllByCategory(category);
+
+        return challenges.stream().map(this::convertToDto).toList();
+    }
 
     //    Post
     public void postChallenge(ChallengeDTO challengeDto, long catid) {
@@ -57,4 +72,35 @@ public class ChallengeService {
 
         challengeRepo.save(challenge);
     }
+
+    //    Edit
+    public void putChallenge(ChallengeDTO challengeDto, long id) {
+
+        Challenge challenge = challengeRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Challenge Not Found!"));
+
+        if (challengeRepo.findByName(challengeDto.getName()) != null){
+            throw new IllegalStateException("Challenge with the same name already Exists!");
+        }
+
+        challenge.setName(challengeDto.getName());
+        challenge.setDescription(challengeDto.getDescription());
+        challenge.setFlag(challengeDto.getFlag());
+        challenge.setChallengeImage(challenge.getChallengeImage());
+        challenge.setDifficulty(challengeDto.getDifficulty());
+
+        if(challengeDto.getCategory() != null){
+            challenge.setCategory(challengeDto.getCategory());
+        }
+
+        challengeRepo.save(challenge);
+    }
+
+    //    Delete
+    public void deleteChallenge(long id) {
+
+        Challenge challenge = challengeRepo.findById(id).orElseThrow(()-> new EntityNotFoundException("Challenge Not Found!"));
+
+        challengeRepo.delete(challenge);
+    }
+
 }
