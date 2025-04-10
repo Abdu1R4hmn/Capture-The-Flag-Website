@@ -40,6 +40,12 @@ public class ChallengeController {
         return challengeService.getChallengeCategory(cat);
     }
 
+    //    GET by id.
+    @GetMapping("/get/{id}")
+    public ChallengeDTO getChallenge(@PathVariable("id") long id){
+        return challengeService.getChallenge(id);
+    }
+
     //    Post challenge.
     @PostMapping("/post/{catid}")
     public void postChallenge(@RequestBody ChallengeDTO challengeDto,@PathVariable("catid") long catid){

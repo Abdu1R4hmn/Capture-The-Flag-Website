@@ -2,6 +2,7 @@ package com.example.springboot.Challenge;
 
 import com.example.springboot.Category.Category;
 import com.example.springboot.Category.CategoryDTO;
+import com.example.springboot.Hints.Hints;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -19,4 +20,6 @@ public class ChallengeDTO {
     private byte[] challengeImage;
 
     private Category category;
+
+    private Hints hints;
 }

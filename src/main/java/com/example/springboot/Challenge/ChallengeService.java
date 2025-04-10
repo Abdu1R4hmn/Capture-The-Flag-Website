@@ -26,7 +26,7 @@ public class ChallengeService {
 
     //    DTOs
     public ChallengeDTO convertToDto(Challenge challenge){
-        return new ChallengeDTO(challenge.getName(),challenge.getDescription(),challenge.getDifficulty(),challenge.getFlag(),challenge.getChallengeImage(),challenge.getCategory());
+        return new ChallengeDTO(challenge.getName(),challenge.getDescription(),challenge.getDifficulty(),challenge.getFlag(),challenge.getChallengeImage(),challenge.getCategory(), challenge.getHints());
     }
     public Challenge convertToEntity(ChallengeDTO challengeDto){
         return new Challenge(challengeDto.getName(),challengeDto.getDescription(),challengeDto.getDifficulty(),challengeDto.getFlag(),challengeDto.getChallengeImage(),challengeDto.getCategory());
@@ -57,7 +57,16 @@ public class ChallengeService {
         return challenges.stream().map(this::convertToDto).toList();
     }
 
-    //    Post
+    //    Get Id
+    public ChallengeDTO getChallenge(long id) {
+        Challenge challenge = challengeRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("challenge not found"));
+
+        ChallengeDTO challengeDTO = convertToDto(challenge);
+
+        return challengeDTO;
+    }
+
+    //    Post :: How to make it submit hints with the challenges together?
     public void postChallenge(ChallengeDTO challengeDto, long catid) {
 
         if (challengeRepo.findByName(challengeDto.getName()) != null){
@@ -102,5 +111,6 @@ public class ChallengeService {
 
         challengeRepo.delete(challenge);
     }
+
 
 }

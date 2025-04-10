@@ -1,6 +1,7 @@
 package com.example.springboot.Challenge;
 
 import com.example.springboot.Category.Category;
+import com.example.springboot.Hints.Hints;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,6 +34,10 @@ public class Challenge {
     @ManyToOne
     private Category category;
 
+    @OneToOne
+    private Hints hints;
+
+//    Constructor
     public Challenge(String name, String description, Difficulty difficulty, String flag, byte[] challengeImage, Category category) {
         this.name = name;
         this.description = description;
