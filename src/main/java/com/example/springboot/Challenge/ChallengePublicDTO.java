@@ -8,14 +8,14 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ChallengeDTO {
+public class ChallengePublicDTO {
     private String name;
 
     private String description;
 
     private Difficulty difficulty;
 
-    private String flag;
+//    private String flag;
 
     private boolean completed;
 

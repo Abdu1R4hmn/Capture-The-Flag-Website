@@ -1,6 +1,7 @@
 package com.example.springboot.User;
 
 
+import com.example.springboot.Progress.Progress;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -44,14 +45,19 @@ public class User{
     private Role role;
 
 
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private Progress progress;
+
+
     private LocalDateTime regDateAndTime;
 
 
-    public User(String username, String email, String password, Role role) {
+    public User(String username, String email, String password, Role role, Progress progress) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.progress = progress;
     }
 
     public User(String username, String email, String password) {

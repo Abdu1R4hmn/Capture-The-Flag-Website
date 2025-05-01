@@ -1,5 +1,6 @@
 package com.example.springboot.User;
 
+import com.example.springboot.Progress.Progress;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -14,5 +15,6 @@ public class UserResponseDto {
     private String email;
     private Role role;
     private LocalDateTime regDateAndTime;
+    private Progress progress;
 
 }

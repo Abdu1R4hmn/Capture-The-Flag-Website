@@ -50,7 +50,7 @@ public class UserController {
     }
 
     //   Edit User.
-    @PutMapping(path = "edit/{id}")
+    @PatchMapping(path = "edit/{id}")
     public ResponseEntity<ApiResponseDto<?>> updateUser(@RequestBody UserRequestDto user,@PathVariable("id")long id) throws UserNotFoundException, UserServiceLogicException {
         return userService.updateUser(user, id);
     }

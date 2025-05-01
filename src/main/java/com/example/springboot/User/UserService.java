@@ -1,5 +1,6 @@
 package com.example.springboot.User;
 
+import com.example.springboot.Progress.Progress;
 import com.example.springboot.exceptions.UserAlreadyExistsException;
 import com.example.springboot.exceptions.UserNotFoundException;
 import com.example.springboot.exceptions.UserServiceLogicException;
@@ -26,7 +27,7 @@ public class UserService {
 
     //   DTO
     private UserResponseDto convertToDto(User user) {
-        return new UserResponseDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole(), user.getRegDateAndTime());
+        return new UserResponseDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole(), user.getRegDateAndTime(),user.getProgress());
     }
 
 //  CRUD
@@ -107,7 +108,13 @@ public class UserService {
                 throw new UserAlreadyExistsException("Registration failed: User already exists with email " + newUser.getEmail());
             }
 
+//            Attaching Progress for new user.
+            Progress progress = new Progress();
+
             User user = new User(newUser.getUsername(), newUser.getEmail(), newUser.getPassword());
+
+//            Saving Progress for new user.
+            user.setProgress(progress);
 
             userRepo.save(user);
 
@@ -127,10 +134,19 @@ public class UserService {
 
             User orginalUser = userRepo.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with id " + id));
 
-            orginalUser.setUsername(user.getUsername());
-            orginalUser.setEmail(user.getEmail());
-            orginalUser.setPassword(user.getPassword());
-            orginalUser.setRole(user.getRole());
+            if(user.getUsername() != null) {
+                orginalUser.setUsername(user.getUsername());
+            }
+            if(user.getEmail() != null) {
+                orginalUser.setEmail(user.getEmail());
+            }
+            if (user.getPassword() != null) {
+                orginalUser.setPassword(user.getPassword());
+            }
+
+            if (user.getRole() != null) {
+                orginalUser.setRole(user.getRole());
+            }
 
             userRepo.save(orginalUser);
 

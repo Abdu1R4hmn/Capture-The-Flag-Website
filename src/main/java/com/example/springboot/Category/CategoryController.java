@@ -45,7 +45,7 @@ public class CategoryController {
     }
 
     //    Edit category
-    @PutMapping("/put/{id}")
+    @PatchMapping("/put/{id}")
     public void putCategory(@RequestBody CategoryDTO categoryDto,@PathVariable("id") long id){
         categoryService.putCategory(categoryDto,id);
     }

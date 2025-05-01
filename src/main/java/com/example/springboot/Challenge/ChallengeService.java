@@ -24,46 +24,73 @@ public class ChallengeService {
         this.categoryRepo = categoryRepo;
     }
 
-    //    DTOs
+//    DTOs
     public ChallengeDTO convertToDto(Challenge challenge){
-        return new ChallengeDTO(challenge.getName(),challenge.getDescription(),challenge.getDifficulty(),challenge.getFlag(),challenge.getChallengeImage(),challenge.getCategory(), challenge.getHints());
+        return new ChallengeDTO(challenge.getName(),challenge.getDescription(),challenge.getDifficulty(),challenge.getFlag(),challenge.isCompleted(), challenge.getStars(), challenge.getChallengeImage(),challenge.getCategory(),challenge.getHints());
     }
-    public Challenge convertToEntity(ChallengeDTO challengeDto){
-        return new Challenge(challengeDto.getName(),challengeDto.getDescription(),challengeDto.getDifficulty(),challengeDto.getFlag(),challengeDto.getChallengeImage(),challengeDto.getCategory());
+    public ChallengePublicDTO convertToPublicDto(Challenge challenge){
+        return new ChallengePublicDTO(challenge.getName(),challenge.getDescription(),challenge.getDifficulty(),challenge.isCompleted(), challenge.getStars(), challenge.getChallengeImage(),challenge.getCategory(),challenge.getHints());
     }
 
+    public Challenge convertToEntity(ChallengeDTO challengeDto){
+        return new Challenge(challengeDto.getName(),challengeDto.getDescription(),challengeDto.getDifficulty(),challengeDto.getFlag(), challengeDto.isCompleted(), challengeDto.getStars(), challengeDto.getChallengeImage(),challengeDto.getCategory());
+    }
+
+//Functions
+
+    //    Challenge completed
+    public void isSolved(Challenge challenge, String flag){
+
+//        Compare the submitted Flag to the Challenge's flag.
+//        If they match then the challenge is completed succesfully.
+        if(flag == challenge.getFlag()){
+            challenge.setCompleted(true);
+        }
+
+//        Check how many hints are used.
+//        Assign the challenge stars based on how many hints used.
+        if(challenge.getHints() != null){
+            challenge.setStars(2);
+        } else if (challenge.getHints() == null) {
+            challenge.setStars(1);
+        }else {
+            challenge.setStars(3);
+        }
+
+//        Append completed challenge to list of users challenges
+    };
 
 //    CRUD
 
     //    GET All
-    public List<ChallengeDTO> getChallengeAll() {
-        List<ChallengeDTO> challenges = challengeRepo.findAll().stream().map(this::convertToDto).toList();
+    public List<ChallengePublicDTO> getChallengeAll() {
+        List<ChallengePublicDTO> challenges = challengeRepo.findAll().stream().map(this::convertToPublicDto).toList();
         return challenges;
     }
 
     //    GET Difficulty
-    public List<ChallengeDTO> getChallengeDifficulty(Difficulty diff) {
+    public List<ChallengePublicDTO> getChallengeDifficulty(Difficulty diff) {
 
         List<Challenge> challenges = challengeRepo.findAllByDifficulty(diff);
 
-        return challenges.stream().map(this::convertToDto).toList();
+        return challenges.stream().map(this::convertToPublicDto).toList();
     }
 
     //    GET Category
-    public List<ChallengeDTO> getChallengeCategory(Category category) {
+    public List<ChallengePublicDTO> getChallengeCategory(Category category) {
 
         List<Challenge> challenges = challengeRepo.findAllByCategory(category);
 
-        return challenges.stream().map(this::convertToDto).toList();
+        return challenges.stream().map(this::convertToPublicDto).toList();
     }
 
     //    Get Id
-    public ChallengeDTO getChallenge(long id) {
+    public ChallengePublicDTO getChallenge(long id) {
         Challenge challenge = challengeRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("challenge not found"));
 
-        ChallengeDTO challengeDTO = convertToDto(challenge);
+        ChallengePublicDTO challengePublicDTO = convertToPublicDto(challenge);
 
-        return challengeDTO;
+        return challengePublicDTO;
     }
 
     //    Post :: How to make it submit hints with the challenges together?
@@ -73,8 +100,9 @@ public class ChallengeService {
             throw new IllegalStateException("Challenge with the same name already Exists!");
         }
 
+//        Get Category
         Category category = categoryRepo.findById(catid).orElseThrow(() -> new EntityNotFoundException("Category Not Found!"));
-
+//         Attach category
         challengeDto.setCategory(category);
 
         Challenge challenge = convertToEntity(challengeDto);
@@ -85,20 +113,38 @@ public class ChallengeService {
     //    Edit
     public void putChallenge(ChallengeDTO challengeDto, long id) {
 
+//        if (challengeRepo.findByName(challengeDto.getName()) != null){
+//            throw new IllegalStateException("Challenge with the same name already Exists!");
+//        }
+
         Challenge challenge = challengeRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Challenge Not Found!"));
 
-        if (challengeRepo.findByName(challengeDto.getName()) != null){
-            throw new IllegalStateException("Challenge with the same name already Exists!");
+        if(challengeDto.getName() != null) {
+            challenge.setName(challengeDto.getName());
         }
 
-        challenge.setName(challengeDto.getName());
-        challenge.setDescription(challengeDto.getDescription());
-        challenge.setFlag(challengeDto.getFlag());
-        challenge.setChallengeImage(challenge.getChallengeImage());
-        challenge.setDifficulty(challengeDto.getDifficulty());
+        if(challengeDto.getDescription() != null) {
+            challenge.setDescription(challengeDto.getDescription());
+        }
+
+        if(challengeDto.getFlag() != null) {
+            challenge.setFlag(challengeDto.getFlag());
+        }
+        if(challengeDto.getChallengeImage() != null) {
+            challenge.setChallengeImage(challengeDto.getChallengeImage());
+        }
+
+        if(challengeDto.getStars() != 0) {
+            challenge.setStars(challengeDto.getStars());
+        }
+
+        challenge.setCompleted(challengeDto.isCompleted());
 
         if(challengeDto.getCategory() != null){
             challenge.setCategory(challengeDto.getCategory());
+        }
+        if(challengeDto.getHints() != null){
+            challenge.setHints(challengeDto.getHints());
         }
 
         challengeRepo.save(challenge);

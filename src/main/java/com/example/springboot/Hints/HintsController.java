@@ -30,7 +30,7 @@ public class HintsController {
     }
 
     //    PUT
-    @PutMapping("/put/{id}")
+    @PatchMapping("/put/{id}")
     public void putHints(@RequestBody HintsDTO hintsDto,@PathVariable("id") long id){
         hintsService.putHints(hintsDto, id);
     }
