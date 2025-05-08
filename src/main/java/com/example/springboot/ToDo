@@ -1,0 +1,13 @@
+
+ToDo:
+
+    Game Logic:
+        Transfer challenge to Solved.
+        Attach Solved challenges to Progress.
+        Check for hints used.
+        Calculate Stars.
+
+    Security:
+        Authentication:
+            Oauth
+        Authorization(Role):

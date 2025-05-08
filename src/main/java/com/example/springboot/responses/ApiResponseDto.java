@@ -10,4 +10,12 @@ import lombok.NoArgsConstructor;
 public class ApiResponseDto<T> {
     private String status;
     private T response;
+    private int totalPages;
+
+
+    // ✅ Existing constructor (no totalPages)
+    public ApiResponseDto(String status, T response) {
+        this.status = status;
+        this.response = response;
+    }
 }

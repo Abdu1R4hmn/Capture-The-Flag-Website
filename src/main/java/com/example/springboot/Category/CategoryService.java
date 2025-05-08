@@ -86,6 +86,9 @@ public class CategoryService {
         categoryRepo.delete(category);
     }
 
-
+    //      GET TOTAL NUMBER OF USERS
+    public long totalCategory() {
+        return categoryRepo.findAll().stream().count();
+    }
 
 }

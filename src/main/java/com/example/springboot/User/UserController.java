@@ -1,16 +1,18 @@
 package com.example.springboot.User;
 
+
 import com.example.springboot.exceptions.UserAlreadyExistsException;
 import com.example.springboot.exceptions.UserNotFoundException;
 import com.example.springboot.exceptions.UserServiceLogicException;
 import com.example.springboot.responses.ApiResponseDto;
+import jakarta.validation.Path;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("api/user")
 public class UserController {
@@ -27,8 +29,11 @@ public class UserController {
 
     //  GETs All Users Data (for Admin).
     @GetMapping(path = "get/all")
-    public ResponseEntity<ApiResponseDto<List<UserResponseDto>>> getAllUsersData() throws UserServiceLogicException {
-        return userService.getAllUsers();
+    public ResponseEntity<ApiResponseDto<List<UserResponseDto>>> getAllUsersData(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) throws UserServiceLogicException {
+        return userService.getAllUsers(page, size);
     }
 
     //  GET a specific User by id.
@@ -51,7 +56,7 @@ public class UserController {
 
     //   Edit User.
     @PatchMapping(path = "edit/{id}")
-    public ResponseEntity<ApiResponseDto<?>> updateUser(@RequestBody UserRequestDto user,@PathVariable("id")long id) throws UserNotFoundException, UserServiceLogicException {
+    public ResponseEntity<ApiResponseDto<?>> updateUser(@Valid @RequestBody UserEditDto user,@PathVariable("id")long id) throws UserAlreadyExistsException, UserNotFoundException, UserServiceLogicException {
         return userService.updateUser(user, id);
     }
 
@@ -59,5 +64,11 @@ public class UserController {
     @DeleteMapping(path = "delete/{id}")
     public ResponseEntity<ApiResponseDto<?>> deleteUser(@PathVariable("id")long id)throws UserNotFoundException, UserServiceLogicException{
         return userService.deleteUser(id);
+    }
+
+//    GET TOTAL NUMBER OF USERS
+    @GetMapping(path = "total")
+    public long totalUsers(){
+        return userService.totalUsers();
     }
 }

@@ -6,11 +6,16 @@ import com.example.springboot.exceptions.UserNotFoundException;
 import com.example.springboot.exceptions.UserServiceLogicException;
 import com.example.springboot.responses.ApiResponseDto;
 import com.example.springboot.responses.ApiResponseStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+//import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 
@@ -33,17 +38,20 @@ public class UserService {
 //  CRUD
 
     //  GETs All Users Data (for Admin).
-    public ResponseEntity<ApiResponseDto<List<UserResponseDto>>> getAllUsers() throws UserServiceLogicException {
+    public ResponseEntity<ApiResponseDto<List<UserResponseDto>>> getAllUsers(int page, int size) throws UserServiceLogicException {
 
         try {
+//            Pagination
+            Page<User> usersPage = userRepo.findAll(PageRequest.of(page, size, Sort.by("id").descending()));
+
 //        Get all users
             List<User> users = userRepo.findAll();
 
 //        Convert users to Dtos
-            List<UserResponseDto> userDtos = users.stream().map(this::convertToDto).toList();
+            List<UserResponseDto> userDtos = usersPage.getContent().stream().map(this::convertToDto).toList();
 
 //        wrap the Dtos in the ApiResponseDto
-            ApiResponseDto<List<UserResponseDto>> wrappedDtos = new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), userDtos);
+            ApiResponseDto<List<UserResponseDto>> wrappedDtos = new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), userDtos, usersPage.getTotalPages());
 
             return ResponseEntity.ok(wrappedDtos);
 
@@ -111,7 +119,7 @@ public class UserService {
 //            Attaching Progress for new user.
             Progress progress = new Progress();
 
-            User user = new User(newUser.getUsername(), newUser.getEmail(), newUser.getPassword());
+            User user = new User(newUser.getUsername(), newUser.getEmail(), newUser.getPassword(), newUser.getRole(), progress);
 
 //            Saving Progress for new user.
             user.setProgress(progress);
@@ -129,8 +137,13 @@ public class UserService {
     }
 
     //   EDIT/Put User.
-    public ResponseEntity<ApiResponseDto<?>> updateUser(UserRequestDto user, long id) throws UserNotFoundException, UserServiceLogicException {
+    public ResponseEntity<ApiResponseDto<?>> updateUser(UserEditDto user, long id) throws UserAlreadyExistsException, UserNotFoundException, UserServiceLogicException {
         try {
+
+            User existingUser = userRepo.findByEmail(user.getEmail());
+            if (existingUser != null && existingUser.getId() != id) {
+                throw new UserAlreadyExistsException("Update failed: Another user already exists with email " + user.getEmail());
+            }
 
             User orginalUser = userRepo.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with id " + id));
 
@@ -154,7 +167,9 @@ public class UserService {
 
         } catch (UserNotFoundException e) {
             throw new UserNotFoundException(e.getMessage());
-        } catch (Exception e) {
+        } catch (UserAlreadyExistsException e) {
+            throw new UserAlreadyExistsException(e.getMessage());
+        }catch (Exception e) {
             throw new UserServiceLogicException();
         }
     }
@@ -176,5 +191,10 @@ public class UserService {
             throw new UserServiceLogicException();
         }
 
+    }
+
+//      GET TOTAL NUMBER OF USERS
+    public long totalUsers() {
+        return userRepo.findAll().stream().count();
     }
 }

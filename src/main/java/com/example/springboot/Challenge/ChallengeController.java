@@ -64,6 +64,11 @@ public class ChallengeController {
         challengeService.deleteChallenge(id);
     }
 
+    //    GET TOTAL NUMBER OF USERS
+    @GetMapping(path = "total")
+    public long totalChallenges() {
+        return challengeService.totalChallenges();
+    }
 //    Game Logic
 
     //    Submit Flag

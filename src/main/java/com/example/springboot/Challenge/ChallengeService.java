@@ -158,5 +158,8 @@ public class ChallengeService {
         challengeRepo.delete(challenge);
     }
 
-
+    //      GET TOTAL NUMBER OF USERS
+    public long totalChallenges() {
+        return challengeRepo.findAll().stream().count();
+    }
 }
