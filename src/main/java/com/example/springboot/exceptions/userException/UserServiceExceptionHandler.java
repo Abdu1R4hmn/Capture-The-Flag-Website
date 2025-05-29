@@ -1,4 +1,4 @@
-package com.example.springboot.exceptions;
+package com.example.springboot.exceptions.userException;
 
 import com.example.springboot.responses.ApiResponseDto;
 import com.example.springboot.responses.ApiResponseStatus;

@@ -1,11 +1,10 @@
 package com.example.springboot.User;
 
 
-import com.example.springboot.exceptions.UserAlreadyExistsException;
-import com.example.springboot.exceptions.UserNotFoundException;
-import com.example.springboot.exceptions.UserServiceLogicException;
+import com.example.springboot.exceptions.userException.UserAlreadyExistsException;
+import com.example.springboot.exceptions.userException.UserNotFoundException;
+import com.example.springboot.exceptions.userException.UserServiceLogicException;
 import com.example.springboot.responses.ApiResponseDto;
-import jakarta.validation.Path;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

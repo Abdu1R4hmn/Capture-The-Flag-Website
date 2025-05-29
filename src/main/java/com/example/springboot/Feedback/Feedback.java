@@ -1,35 +1,29 @@
-package com.example.springboot.Hints;
+package com.example.springboot.Feedback;
 
 import com.example.springboot.Challenge.Challenge;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Table
+@Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class Hints {
+public class Feedback {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    private String hint_1;
-
-    private String hint_2;
+    @NotBlank
+    private String comment;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "hints" ,fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @ManyToOne
     private Challenge challenge;
 
-
-//    Constructor
-    public Hints(String hint_1, String hint_2) {
-        this.hint_1 = hint_1;
-        this.hint_2 = hint_2;
-    }
 }

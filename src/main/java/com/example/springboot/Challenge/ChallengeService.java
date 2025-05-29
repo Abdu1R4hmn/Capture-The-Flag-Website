@@ -1,165 +1,237 @@
 package com.example.springboot.Challenge;
 
 import com.example.springboot.Category.Category;
-import com.example.springboot.Category.CategoryDTO;
-import jakarta.persistence.EntityNotFoundException;
+import com.example.springboot.exceptions.challengeException.ChallengeServiceLogicException;
+import com.example.springboot.responses.ApiResponseDto;
+import com.example.springboot.responses.ApiResponseStatus;
+import com.example.springboot.exceptions.challengeException.ChallengeAlreadyExistsException;
+import com.example.springboot.exceptions.challengeException.ChallengeNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.example.springboot.Category.CategoryRepo;
-import com.example.springboot.Challenge.Challenge;
-import com.example.springboot.Challenge.ChallengeDTO;
-
 
 import java.util.List;
 
 @Service
 public class ChallengeService {
 
-//    Variables
+    //    Variables
     private final ChallengeRepo challengeRepo;
     private final CategoryRepo categoryRepo;
 
-//    Constructor
+    //    Constructor
     public ChallengeService(ChallengeRepo challengeRepo, CategoryRepo categoryRepo){
         this.challengeRepo = challengeRepo;
         this.categoryRepo = categoryRepo;
     }
 
-//    DTOs
+    //    DTOs
     public ChallengeDTO convertToDto(Challenge challenge){
-        return new ChallengeDTO(challenge.getName(),challenge.getDescription(),challenge.getDifficulty(),challenge.getFlag(),challenge.isCompleted(), challenge.getStars(), challenge.getChallengeImage(),challenge.getCategory(),challenge.getHints());
+        return new ChallengeDTO(challenge.getId(), challenge.getName(),challenge.getDescription(),challenge.getChallengeImage(), challenge.getDifficulty(),challenge.getFlag(),challenge.isCompleted(), challenge.getStars(),challenge.getFeedback(),challenge.getCategory(),challenge.getHint1(),challenge.getHint2());
     }
     public ChallengePublicDTO convertToPublicDto(Challenge challenge){
-        return new ChallengePublicDTO(challenge.getName(),challenge.getDescription(),challenge.getDifficulty(),challenge.isCompleted(), challenge.getStars(), challenge.getChallengeImage(),challenge.getCategory(),challenge.getHints());
+        return new ChallengePublicDTO( challenge.getId(),challenge.getName(),challenge.getDescription(),challenge.getDifficulty(),challenge.isCompleted(), challenge.getStars(), challenge.getChallengeImage(),challenge.getCategory(),challenge.getHint1(),challenge.getHint2());
     }
 
-    public Challenge convertToEntity(ChallengeDTO challengeDto){
-        return new Challenge(challengeDto.getName(),challengeDto.getDescription(),challengeDto.getDifficulty(),challengeDto.getFlag(), challengeDto.isCompleted(), challengeDto.getStars(), challengeDto.getChallengeImage(),challengeDto.getCategory());
+    public Challenge convertToEntity(ChallengeDTO dto) {
+        Challenge challenge = new Challenge(
+                dto.getName(), dto.getDescription(), dto.getDifficulty(), dto.getFlag(),
+                dto.isCompleted(), dto.getStars(), dto.getChallengeImage(), dto.getCategory(), dto.getHint1(), dto.getHint2()
+        );
+        return challenge;
     }
 
-//Functions
-
-    //    Challenge completed
-    public void isSolved(Challenge challenge, String flag){
-
-//        Compare the submitted Flag to the Challenge's flag.
-//        If they match then the challenge is completed succesfully.
-        if(flag == challenge.getFlag()){
-            challenge.setCompleted(true);
-        }
-
-//        Check how many hints are used.
-//        Assign the challenge stars based on how many hints used.
-        if(challenge.getHints() != null){
-            challenge.setStars(2);
-        } else if (challenge.getHints() == null) {
-            challenge.setStars(1);
-        }else {
-            challenge.setStars(3);
-        }
-
-//        Append completed challenge to list of users challenges
-    };
 
 //    CRUD
 
-    //    GET All
-    public List<ChallengePublicDTO> getChallengeAll() {
-        List<ChallengePublicDTO> challenges = challengeRepo.findAll().stream().map(this::convertToPublicDto).toList();
-        return challenges;
+    //    GET All ADMIN
+    public ResponseEntity<ApiResponseDto<List<ChallengeDTO>>> getChallengeAll(int page, int size) {
+        try {
+            Page<Challenge> challengesPage = challengeRepo.findAll(PageRequest.of(page, size, Sort.by("id").descending()));
+
+            List<ChallengeDTO> challengeDto = challengesPage.getContent().stream().map(this::convertToDto).toList();
+
+            return ResponseEntity.ok(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), challengeDto, challengesPage.getTotalPages()));
+
+        } catch (Exception e) {
+            throw new ChallengeServiceLogicException("Failed to retrieve challenges");
+        }
     }
 
     //    GET Difficulty
-    public List<ChallengePublicDTO> getChallengeDifficulty(Difficulty diff) {
-
-        List<Challenge> challenges = challengeRepo.findAllByDifficulty(diff);
-
-        return challenges.stream().map(this::convertToPublicDto).toList();
+    public ResponseEntity<ApiResponseDto<List<ChallengePublicDTO>>> getChallengeDifficulty(Difficulty diff) {
+        try {
+            List<Challenge> challenges = challengeRepo.findAllByDifficulty(diff);
+            List<ChallengePublicDTO> challengesDto = challenges.stream().map(this::convertToPublicDto).toList();
+            return ResponseEntity.ok(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), challengesDto));
+        } catch (Exception e) {
+            throw new ChallengeServiceLogicException("Failed to retrieve challenges by difficulty");
+        }
     }
 
     //    GET Category
-    public List<ChallengePublicDTO> getChallengeCategory(Category category) {
+    public  ResponseEntity<ApiResponseDto<List<ChallengeDTO>>> getChallengeCategory(String categoryType) throws ChallengeNotFoundException {
+        try {
+            Category category = categoryRepo.findByType(categoryType);
+            if (category == null) {
+                throw new ChallengeNotFoundException("Category not found.");
+            }
 
-        List<Challenge> challenges = challengeRepo.findAllByCategory(category);
+            List<Challenge> challenges = challengeRepo.findAllByCategory(category);
+            List<ChallengeDTO> challengesDto = challenges.stream().map(this::convertToDto).toList();
 
-        return challenges.stream().map(this::convertToPublicDto).toList();
+            return ResponseEntity.ok(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), challengesDto));
+        } catch (ChallengeNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ChallengeServiceLogicException("Failed to retrieve challenges by category");
+        }
     }
 
     //    Get Id
-    public ChallengePublicDTO getChallenge(long id) {
-        Challenge challenge = challengeRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("challenge not found"));
-
-        ChallengePublicDTO challengePublicDTO = convertToPublicDto(challenge);
-
-        return challengePublicDTO;
+    public  ResponseEntity<ApiResponseDto<ChallengePublicDTO>> getChallenge(long id) throws ChallengeNotFoundException {
+        try {
+            Challenge challenge = challengeRepo.findById(id).orElseThrow(() -> new ChallengeNotFoundException("Challenge not found with ID: " + id));
+            ChallengePublicDTO challengePublicDTO = convertToPublicDto(challenge);
+            return ResponseEntity.ok(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), challengePublicDTO));
+        } catch (ChallengeNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ChallengeServiceLogicException("Failed to retrieve challenge by ID");
+        }
     }
 
-    //    Post :: How to make it submit hints with the challenges together?
-    public void postChallenge(ChallengeDTO challengeDto, long catid) {
-
-        if (challengeRepo.findByName(challengeDto.getName()) != null){
-            throw new IllegalStateException("Challenge with the same name already Exists!");
+    //    Get name
+    public ResponseEntity<ApiResponseDto<ChallengeDTO>> getChallengeName(String name) throws ChallengeNotFoundException {
+        try {
+            if (challengeRepo.findByName(name) == null) {
+                throw new ChallengeNotFoundException("Challenge Not Found With The Name " + name);
+            }
+            Challenge challenge = challengeRepo.findByName(name);
+            ChallengeDTO challengeDTO = convertToDto(challenge);
+            return ResponseEntity.ok(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), challengeDTO));
+        } catch (ChallengeNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ChallengeServiceLogicException("Failed to retrieve challenge by ID");
         }
+    }
+
+    //    Post
+    public ResponseEntity<ApiResponseDto<?>> postChallenge(ChallengeDTO challengeDto, long catid) throws ChallengeAlreadyExistsException, ChallengeNotFoundException {
+        try {
+            if (challengeRepo.findByName(challengeDto.getName()) != null){
+                throw new ChallengeAlreadyExistsException("Challenge with the same name already exists!");
+            }
 
 //        Get Category
-        Category category = categoryRepo.findById(catid).orElseThrow(() -> new EntityNotFoundException("Category Not Found!"));
+            Category category = categoryRepo.findById(catid).orElseThrow(() -> new ChallengeNotFoundException("Category not found with ID: " + catid));
 //         Attach category
-        challengeDto.setCategory(category);
+            challengeDto.setCategory(category);
 
-        Challenge challenge = convertToEntity(challengeDto);
+            Challenge challenge = convertToEntity(challengeDto);
 
-        challengeRepo.save(challenge);
+            challengeRepo.save(challenge);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), "Challenge created successfully!"));
+        } catch (ChallengeAlreadyExistsException | ChallengeNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+
+            throw new ChallengeServiceLogicException("Failed to create challenge");
+        }
     }
 
     //    Edit
-    public void putChallenge(ChallengeDTO challengeDto, long id) {
+    public ResponseEntity<ApiResponseDto<?>> putChallenge(ChallengeDTO challengeDto, long id, long catid) throws ChallengeNotFoundException, ChallengeAlreadyExistsException {
+        try {
 
-//        if (challengeRepo.findByName(challengeDto.getName()) != null){
-//            throw new IllegalStateException("Challenge with the same name already Exists!");
-//        }
+            Challenge existingByName = challengeRepo.findByName(challengeDto.getName());
+            if (existingByName != null && existingByName.getId() != id) {
+                throw new ChallengeAlreadyExistsException("Challenge with the same name already exists!");
+            }
 
-        Challenge challenge = challengeRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Challenge Not Found!"));
 
-        if(challengeDto.getName() != null) {
-            challenge.setName(challengeDto.getName());
+            Challenge challenge = challengeRepo.findById(id).orElseThrow(() -> new ChallengeNotFoundException("Challenge not found with ID: " + id));
+
+            if(challengeDto.getName() != null) {
+                challenge.setName(challengeDto.getName());
+            }
+
+            if(challengeDto.getDescription() != null) {
+                challenge.setDescription(challengeDto.getDescription());
+            }
+
+            if(challengeDto.getFlag() != null) {
+                challenge.setFlag(challengeDto.getFlag());
+            }
+
+            if(challengeDto.getChallengeImage() != null) {
+                challenge.setChallengeImage(challengeDto.getChallengeImage());
+            }
+
+            if(challengeDto.getStars() != 0) {
+                challenge.setStars(challengeDto.getStars());
+            }
+
+            challenge.setCompleted(challengeDto.isCompleted());
+
+            if(challengeDto.getCategory() != null){
+                challenge.setCategory(challengeDto.getCategory());
+            }
+
+            if(challengeDto.getHint1() != null){
+                challenge.setHint1(challengeDto.getHint1());
+            }
+
+            if(challengeDto.getHint2() != null){
+                challenge.setHint2(challengeDto.getHint2());
+            }
+
+            //  Update category
+            Category category = categoryRepo.findById(catid).orElseThrow(() ->
+                    new ChallengeNotFoundException("Category not found with ID: " + catid));
+
+            challenge.setCategory(category);
+
+            challengeRepo.save(challenge);
+            return ResponseEntity.ok(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), "Challenge updated successfully!"));
+        } catch (ChallengeNotFoundException e) {
+            throw new ChallengeNotFoundException(e.getMessage());
+        } catch (ChallengeAlreadyExistsException e) {
+            throw new ChallengeAlreadyExistsException(e.getMessage());
+        } catch (Exception e) {
+            throw new ChallengeServiceLogicException("Failed to update challenge");
         }
-
-        if(challengeDto.getDescription() != null) {
-            challenge.setDescription(challengeDto.getDescription());
-        }
-
-        if(challengeDto.getFlag() != null) {
-            challenge.setFlag(challengeDto.getFlag());
-        }
-        if(challengeDto.getChallengeImage() != null) {
-            challenge.setChallengeImage(challengeDto.getChallengeImage());
-        }
-
-        if(challengeDto.getStars() != 0) {
-            challenge.setStars(challengeDto.getStars());
-        }
-
-        challenge.setCompleted(challengeDto.isCompleted());
-
-        if(challengeDto.getCategory() != null){
-            challenge.setCategory(challengeDto.getCategory());
-        }
-        if(challengeDto.getHints() != null){
-            challenge.setHints(challengeDto.getHints());
-        }
-
-        challengeRepo.save(challenge);
     }
 
     //    Delete
-    public void deleteChallenge(long id) {
-
-        Challenge challenge = challengeRepo.findById(id).orElseThrow(()-> new EntityNotFoundException("Challenge Not Found!"));
-
-        challengeRepo.delete(challenge);
+    public ResponseEntity<ApiResponseDto<?>> deleteChallenge(long id) throws ChallengeNotFoundException {
+        try {
+            Challenge challenge = challengeRepo.findById(id).orElseThrow(()-> new ChallengeNotFoundException("Challenge not found with ID: " + id));
+            challengeRepo.delete(challenge);
+            return ResponseEntity.ok(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), "Challenge deleted successfully!"));
+        } catch (ChallengeNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ChallengeServiceLogicException("Failed to delete challenge");
+        }
     }
 
     //      GET TOTAL NUMBER OF USERS
     public long totalChallenges() {
         return challengeRepo.findAll().stream().count();
     }
+
+
+//Functions
+
+    //    Challenge completed
+    public void isSolved(Challenge challenge, String flag){
+    };
+
 }

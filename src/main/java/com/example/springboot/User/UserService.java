@@ -1,9 +1,9 @@
 package com.example.springboot.User;
 
 import com.example.springboot.Progress.Progress;
-import com.example.springboot.exceptions.UserAlreadyExistsException;
-import com.example.springboot.exceptions.UserNotFoundException;
-import com.example.springboot.exceptions.UserServiceLogicException;
+import com.example.springboot.exceptions.userException.UserAlreadyExistsException;
+import com.example.springboot.exceptions.userException.UserNotFoundException;
+import com.example.springboot.exceptions.userException.UserServiceLogicException;
 import com.example.springboot.responses.ApiResponseDto;
 import com.example.springboot.responses.ApiResponseStatus;
 import org.springframework.data.domain.Page;
@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 
@@ -44,8 +43,6 @@ public class UserService {
 //            Pagination
             Page<User> usersPage = userRepo.findAll(PageRequest.of(page, size, Sort.by("id").descending()));
 
-//        Get all users
-            List<User> users = userRepo.findAll();
 
 //        Convert users to Dtos
             List<UserResponseDto> userDtos = usersPage.getContent().stream().map(this::convertToDto).toList();

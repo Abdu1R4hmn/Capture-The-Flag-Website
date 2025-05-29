@@ -1,14 +1,15 @@
 package com.example.springboot.Challenge;
 
 import com.example.springboot.Category.Category;
-import com.example.springboot.Category.CategoryDTO;
-import com.example.springboot.Hints.Hints;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
+
 public class ChallengePublicDTO {
+    private long id;
+
     private String name;
 
     private String description;
@@ -25,5 +26,7 @@ public class ChallengePublicDTO {
 
     private Category category;
 
-    private Hints hints;
+    private String hint1;
+
+    private String hint2;
 }
