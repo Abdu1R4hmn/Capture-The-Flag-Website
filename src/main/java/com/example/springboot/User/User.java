@@ -12,6 +12,7 @@ import lombok.*;
 
 import com.example.springboot.Role.Role;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Entity
@@ -39,25 +40,29 @@ public class User{
     @Size(min = 8)
     private String password;
 
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
-
-    @OneToOne(cascade = CascadeType.PERSIST)
-    private Progress progress;
-
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Progress> progressList;
 
     private LocalDateTime regDateAndTime;
 
 
-    public User(String username, String email, String password, Role role, Progress progress) {
+    public User(String username, String email, String password, Role role, List<Progress> progressList) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
-        this.progress = progress;
+        this.progressList = progressList;
+    }
+
+    public User(String username, String email, String password, Role role) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.role = role;
     }
 
     public User(String username, String email, String password) {
@@ -73,6 +78,4 @@ public class User{
     protected void onCreate() {
         this.regDateAndTime = LocalDateTime.now();
     }
-
-
 }

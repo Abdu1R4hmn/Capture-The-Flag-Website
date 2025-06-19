@@ -8,10 +8,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
-@Table
+@Table(
+        name = "progress",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "challenge_id"})
+)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,17 +22,12 @@ public class Progress {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JsonIgnore
     private User user;
 
-//    Add the Solved Challenges
+    @ManyToOne
+    private Challenge challenge;
 
-    @OneToMany(mappedBy = "progress",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private List<Challenge> challengeList;
-
-    public Progress(List<Challenge> challengeList){
-
-        this.challengeList = challengeList;
-    }
+    private int stars;
 }

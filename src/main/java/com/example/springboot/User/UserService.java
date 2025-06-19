@@ -31,7 +31,7 @@ public class UserService {
 
     //   DTO
     private UserResponseDto convertToDto(User user) {
-        return new UserResponseDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole(), user.getRegDateAndTime(),user.getProgress());
+        return new UserResponseDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole(), user.getRegDateAndTime(), user.getProgressList());
     }
 
 //  CRUD
@@ -80,7 +80,7 @@ public class UserService {
     }
 
     //  GET a specific User by Email.
-    public ResponseEntity<ApiResponseDto<UserResponseDto>> getUser(String email) throws UserNotFoundException, UserServiceLogicException {
+    public ResponseEntity<ApiResponseDto<UserResponseDto>> getUserEmail(String email) throws UserNotFoundException, UserServiceLogicException {
         try {
 
             if (userRepo.findByEmail(email) == null) {
@@ -105,6 +105,15 @@ public class UserService {
         }
     }
 
+    //    RAW
+    public User getUserByEmail(String email) throws UserNotFoundException {
+        User user = userRepo.findByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundException("User not found with email: " + email);
+        }
+        return user;
+    }
+
     //   POST/Add User.
     public ResponseEntity<ApiResponseDto<?>> addUser(UserRequestDto newUser) throws UserAlreadyExistsException, UserServiceLogicException {
         try {
@@ -114,12 +123,13 @@ public class UserService {
             }
 
 //            Attaching Progress for new user.
-            Progress progress = new Progress();
+            User user = new User(
+                    newUser.getUsername(),
+                    newUser.getEmail(),
+                    newUser.getPassword(),
+                    newUser.getRole()
+            );
 
-            User user = new User(newUser.getUsername(), newUser.getEmail(), newUser.getPassword(), newUser.getRole(), progress);
-
-//            Saving Progress for new user.
-            user.setProgress(progress);
 
             userRepo.save(user);
 

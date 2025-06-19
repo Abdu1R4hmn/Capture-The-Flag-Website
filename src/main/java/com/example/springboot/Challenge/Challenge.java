@@ -40,15 +40,11 @@ public class Challenge {
     @NotBlank(message = "Flag is required.")
     private String flag;
 
-    private boolean completed;
-
     @NotBlank(message = "Hints must be provided.")
     private String hint1;
 
     @NotBlank(message = "Hints must be provided.")
     private String hint2;
-
-    private int stars;
 
     @Lob
     @Column(name = "ChallengeImage")
@@ -59,23 +55,17 @@ public class Challenge {
     @ManyToOne
     private Category category;
 
-    @ManyToOne
-    private Progress progress;
-
     @OneToMany(mappedBy = "challenge", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Feedback> feedback;
 
 
-    public Challenge(String name, String description, Difficulty difficulty, String flag, boolean completed, int stars, byte[] challengeImage, Category category, String hint1, String hint2) {
+    public Challenge(String name, String description, Difficulty difficulty, String flag, byte[] challengeImage, Category category, String hint1, String hint2) {
         this.name = name;
         this.description = description;
         this.difficulty = difficulty;
         this.flag = flag;
-        this.completed = completed;
-        this.stars = stars;
         this.challengeImage = challengeImage;
         this.category = category;
-//        this.progress = progress;
         this.hint1 = hint1;
         this.hint2 = hint2;
     }

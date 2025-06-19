@@ -28,10 +28,7 @@ public class UserController {
 
     //  GETs All Users Data (for Admin).
     @GetMapping(path = "get/all")
-    public ResponseEntity<ApiResponseDto<List<UserResponseDto>>> getAllUsersData(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) throws UserServiceLogicException {
+    public ResponseEntity<ApiResponseDto<List<UserResponseDto>>> getAllUsersData(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) throws UserServiceLogicException {
         return userService.getAllUsers(page, size);
     }
 
@@ -44,7 +41,7 @@ public class UserController {
     //  GET a specific User by Email.
     @GetMapping(path = "get/email/{email}")
     public ResponseEntity<ApiResponseDto<UserResponseDto>> getUserEmail(@PathVariable("email")String email) throws UserNotFoundException, UserServiceLogicException {
-        return userService.getUser(email);
+        return userService.getUserEmail(email);
     }
 
     //   POST/Add User.

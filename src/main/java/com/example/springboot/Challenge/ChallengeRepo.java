@@ -9,5 +9,4 @@ public interface ChallengeRepo extends JpaRepository<Challenge, Long> {
     List<Challenge> findAllByCategory(Category category);
     List<Challenge> findAllByDifficulty(Difficulty difficulty);
     Challenge findByName(String name);
-    List<Challenge> findAllByCompleted(Boolean completed);
 }

@@ -1,6 +1,11 @@
 package com.example.springboot.Challenge;
 
 import com.example.springboot.Category.Category;
+import com.example.springboot.Progress.Progress;
+import com.example.springboot.Progress.ProgressDTO;
+import com.example.springboot.Progress.ProgressRepo;
+import com.example.springboot.User.User;
+import com.example.springboot.exceptions.categoryException.ResourceNotFoundException;
 import com.example.springboot.exceptions.challengeException.ChallengeServiceLogicException;
 import com.example.springboot.responses.ApiResponseDto;
 import com.example.springboot.responses.ApiResponseStatus;
@@ -15,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.example.springboot.Category.CategoryRepo;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ChallengeService {
@@ -22,25 +28,27 @@ public class ChallengeService {
     //    Variables
     private final ChallengeRepo challengeRepo;
     private final CategoryRepo categoryRepo;
+    private final ProgressRepo progressRepo;
 
     //    Constructor
-    public ChallengeService(ChallengeRepo challengeRepo, CategoryRepo categoryRepo){
+    public ChallengeService(ChallengeRepo challengeRepo, CategoryRepo categoryRepo, ProgressRepo progressRepo){
         this.challengeRepo = challengeRepo;
         this.categoryRepo = categoryRepo;
+        this.progressRepo = progressRepo;
     }
 
     //    DTOs
     public ChallengeDTO convertToDto(Challenge challenge){
-        return new ChallengeDTO(challenge.getId(), challenge.getName(),challenge.getDescription(),challenge.getChallengeImage(), challenge.getDifficulty(),challenge.getFlag(),challenge.isCompleted(), challenge.getStars(),challenge.getFeedback(),challenge.getCategory(),challenge.getHint1(),challenge.getHint2());
+        return new ChallengeDTO(challenge.getId(), challenge.getName(),challenge.getDescription(),challenge.getChallengeImage(), challenge.getDifficulty(),challenge.getFlag(),challenge.getFeedback(),challenge.getCategory(),challenge.getHint1(),challenge.getHint2());
     }
+
     public ChallengePublicDTO convertToPublicDto(Challenge challenge){
-        return new ChallengePublicDTO( challenge.getId(),challenge.getName(),challenge.getDescription(),challenge.getDifficulty(),challenge.isCompleted(), challenge.getStars(), challenge.getChallengeImage(),challenge.getCategory(),challenge.getHint1(),challenge.getHint2());
+        return new ChallengePublicDTO( challenge.getId(),challenge.getName(),challenge.getDescription(),challenge.getDifficulty(), challenge.getChallengeImage(),challenge.getCategory(),challenge.getHint1(),challenge.getHint2());
     }
 
     public Challenge convertToEntity(ChallengeDTO dto) {
         Challenge challenge = new Challenge(
-                dto.getName(), dto.getDescription(), dto.getDifficulty(), dto.getFlag(),
-                dto.isCompleted(), dto.getStars(), dto.getChallengeImage(), dto.getCategory(), dto.getHint1(), dto.getHint2()
+                dto.getName(), dto.getDescription(), dto.getDifficulty(), dto.getFlag(), dto.getChallengeImage(), dto.getCategory(), dto.getHint1(), dto.getHint2()
         );
         return challenge;
     }
@@ -56,6 +64,20 @@ public class ChallengeService {
             List<ChallengeDTO> challengeDto = challengesPage.getContent().stream().map(this::convertToDto).toList();
 
             return ResponseEntity.ok(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), challengeDto, challengesPage.getTotalPages()));
+
+        } catch (Exception e) {
+            throw new ChallengeServiceLogicException("Failed to retrieve challenges");
+        }
+    }
+
+    //    GET All User
+    public ResponseEntity<ApiResponseDto<List<ChallengePublicDTO>>> getChallengePublicAll(int page, int size) {
+        try {
+            Page<Challenge> challengesPage = challengeRepo.findAll(PageRequest.of(page, size, Sort.by("id").descending()));
+
+            List<ChallengePublicDTO> challengePublicDto = challengesPage.getContent().stream().map(this::convertToPublicDto).toList();
+
+            return ResponseEntity.ok(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), challengePublicDto, challengesPage.getTotalPages()));
 
         } catch (Exception e) {
             throw new ChallengeServiceLogicException("Failed to retrieve challenges");
@@ -85,6 +107,24 @@ public class ChallengeService {
             List<ChallengeDTO> challengesDto = challenges.stream().map(this::convertToDto).toList();
 
             return ResponseEntity.ok(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), challengesDto));
+        } catch (ChallengeNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ChallengeServiceLogicException("Failed to retrieve challenges by category");
+        }
+    }
+
+    public  ResponseEntity<ApiResponseDto<List<ChallengePublicDTO>>> getChallengePublicCategory(String categoryType) throws ChallengeNotFoundException {
+        try {
+            Category category = categoryRepo.findByType(categoryType);
+            if (category == null) {
+                throw new ChallengeNotFoundException("Category not found.");
+            }
+
+            List<Challenge> challenges = challengeRepo.findAllByCategory(category);
+            List<ChallengePublicDTO> challengesPublicDto = challenges.stream().map(this::convertToPublicDto).toList();
+
+            return ResponseEntity.ok(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), challengesPublicDto));
         } catch (ChallengeNotFoundException e) {
             throw e;
         } catch (Exception e) {
@@ -174,12 +214,6 @@ public class ChallengeService {
                 challenge.setChallengeImage(challengeDto.getChallengeImage());
             }
 
-            if(challengeDto.getStars() != 0) {
-                challenge.setStars(challengeDto.getStars());
-            }
-
-            challenge.setCompleted(challengeDto.isCompleted());
-
             if(challengeDto.getCategory() != null){
                 challenge.setCategory(challengeDto.getCategory());
             }
@@ -231,7 +265,50 @@ public class ChallengeService {
 //Functions
 
     //    Challenge completed
-    public void isSolved(Challenge challenge, String flag){
-    };
+    public ResponseEntity<ApiResponseDto<?>> solveChallenge(Long challengeId, ChallengeSolveRequestDTO dto, User user) {
+        try {
+            Challenge challenge = challengeRepo.findById(challengeId)
+                    .orElseThrow(() -> new ChallengeNotFoundException("Challenge not found"));
+
+            if (!challenge.getFlag().equals(dto.getSubmittedFlag())) {
+                return ResponseEntity.badRequest().body(
+                        new ApiResponseDto<>(ApiResponseStatus.FAIL.name(), "Incorrect flag")
+                );
+            }
+
+            int stars = switch (dto.getUsedHints() == null ? 0 : dto.getUsedHints().size()) {
+                case 0 -> 3;
+                case 1 -> 2;
+                default -> 1;
+            };
+
+            Optional<Progress> existingProgressOpt = progressRepo.findByUserAndChallenge(user, challenge);
+
+            Progress progress;
+            if (existingProgressOpt.isPresent()) {
+                progress = existingProgressOpt.get();
+                progress.setStars(stars); // Optionally keep max stars only
+            } else {
+                progress = new Progress();
+                progress.setUser(user);
+                progress.setChallenge(challenge);
+                progress.setStars(stars);
+            }
+
+            progressRepo.save(progress);
+
+            ProgressDTO response = new ProgressDTO(challenge.getId(), challenge.getName(), stars);
+            return ResponseEntity.ok(new ApiResponseDto<>("SUCCESS", response));
+
+        } catch (ChallengeNotFoundException e) {
+            return ResponseEntity.status(404).body(
+                    new ApiResponseDto<>("FAILED", e.getMessage())
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(
+                    new ApiResponseDto<>("FAILED", "An unexpected error occurred")
+            );
+        }
+    }
 
 }

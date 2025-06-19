@@ -6,6 +6,7 @@ import lombok.Data;
 
 import com.example.springboot.Role.Role;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -15,6 +16,6 @@ public class UserResponseDto {
     private String email;
     private Role role;
     private LocalDateTime regDateAndTime;
-    private Progress progress;
+    private List<Progress> progressList;
 
 }

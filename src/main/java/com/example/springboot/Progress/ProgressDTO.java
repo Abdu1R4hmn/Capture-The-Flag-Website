@@ -2,11 +2,11 @@ package com.example.springboot.Progress;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-//@Data
-//@AllArgsConstructor
-//@NoArgsConstructor
+@Data
+@AllArgsConstructor
 public class ProgressDTO {
-
+    private Long challengeId;
+    private String challengeName;
+    private int starsEarned;
 }

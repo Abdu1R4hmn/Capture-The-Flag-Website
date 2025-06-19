@@ -16,12 +16,6 @@ public class ChallengePublicDTO {
 
     private Difficulty difficulty;
 
-//    private String flag;
-
-    private boolean completed;
-
-    private int stars;
-
     private byte[] challengeImage;
 
     private Category category;

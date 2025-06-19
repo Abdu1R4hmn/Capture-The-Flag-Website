@@ -1,15 +1,16 @@
 package com.example.springboot.Challenge;
 
-
-import com.example.springboot.Category.Category;
-import com.example.springboot.Category.CategoryDTO;
+import com.example.springboot.Progress.ProgressDTO;
+import com.example.springboot.User.User;
+import com.example.springboot.User.UserService;
 import com.example.springboot.exceptions.challengeException.ChallengeAlreadyExistsException;
 import com.example.springboot.exceptions.challengeException.ChallengeNotFoundException;
+import com.example.springboot.exceptions.userException.UserNotFoundException;
+import com.example.springboot.exceptions.userException.UserServiceLogicException;
 import com.example.springboot.responses.ApiResponseDto;
-import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 
@@ -19,10 +20,12 @@ public class ChallengeController {
 
     //    Variables
     private final ChallengeService challengeService;
+    private final UserService userService;
 
     //    Constructor
-    public ChallengeController(ChallengeService challengeService) {
+    public ChallengeController(ChallengeService challengeService, UserService userService) {
         this.challengeService =  challengeService;
+        this.userService = userService;
     }
 
 
@@ -32,6 +35,11 @@ public class ChallengeController {
     @GetMapping("/get/all")
     public ResponseEntity<ApiResponseDto<List<ChallengeDTO>>> getChallengeAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
         return challengeService.getChallengeAll(page,size);
+    }
+    //    GET challenge ALL. ADMIN include flag
+    @GetMapping("/get/public/all")
+    public ResponseEntity<ApiResponseDto<List<ChallengePublicDTO>>> getChallengePublicAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        return challengeService.getChallengePublicAll(page,size);
     }
 
     //    GET all challenge by Difficulty.
@@ -44,6 +52,12 @@ public class ChallengeController {
     @GetMapping("/get/category/{cat}")
     public ResponseEntity<ApiResponseDto<List<ChallengeDTO>>> getChallengeCategory(@PathVariable("cat") String cat) throws ChallengeNotFoundException {
         return challengeService.getChallengeCategory(cat);
+    }
+
+    //    GET all challenge in Category.
+    @GetMapping("/get/category/public/{cat}")
+    public ResponseEntity<ApiResponseDto<List<ChallengePublicDTO>>> getChallengePublicCategory(@PathVariable("cat") String cat) throws ChallengeNotFoundException {
+        return challengeService.getChallengePublicCategory(cat);
     }
 
     //    GET by id.
@@ -85,7 +99,17 @@ public class ChallengeController {
 
     //    Submit Flag
     @PostMapping("/solve/{challengeId}")
-    public void solveChallenge(@PathVariable long challengeId, @RequestBody String submittedFlag){}
+    public ResponseEntity<ApiResponseDto<?>> solveChallenge(
+            @PathVariable Long challengeId,
+            @RequestBody ChallengeSolveRequestDTO dto,
+            @RequestParam String email) throws UserNotFoundException, UserServiceLogicException, ChallengeNotFoundException {
+
+        User user = userService.getUserByEmail(email);
+        return challengeService.solveChallenge(challengeId, dto, user);
+    }
+
+
+
 
 
 }

@@ -36,12 +36,8 @@ public class ChallengeDTO {
     @NotBlank(message = "Flag is required.")
     private String flag;
 
-    private boolean completed;
-
-    private int stars;
-
     private List<Feedback> feedback;
-//    @NotNull(message = "Category must be selected.")
+
     @ManyToOne
     private Category category;
 
