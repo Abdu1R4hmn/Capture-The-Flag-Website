@@ -46,33 +46,31 @@ public class ProgressService {
                 ))
                 .collect(Collectors.toList());
     }
+
     public Map<Difficulty, DifficultyStarSummary> getStarSummaryPerDifficulty(User user) {
-        // Get all challenges grouped by difficulty
         Map<Difficulty, List<Challenge>> challengesByDiff = challengeRepo.findAll().stream()
                 .collect(Collectors.groupingBy(Challenge::getDifficulty));
 
-        // Get user progress
         List<Progress> userProgress = progressRepo.findByUser(user);
 
-        // Earned stars grouped by difficulty
         Map<Difficulty, Integer> earnedMap = userProgress.stream()
                 .collect(Collectors.groupingBy(
                         p -> p.getChallenge().getDifficulty(),
                         Collectors.summingInt(Progress::getStars)
                 ));
 
-        // Build summary per difficulty
         Map<Difficulty, DifficultyStarSummary> summary = new HashMap<>();
-        for (Map.Entry<Difficulty, List<Challenge>> entry : challengesByDiff.entrySet()) {
-            Difficulty difficulty = entry.getKey();
-            int maxStars = entry.getValue().size() * 3; // Each challenge max 3 stars
-            int earnedStars = earnedMap.getOrDefault(difficulty, 0);
 
+        // Ensure all difficulties are included, even if empty
+        for (Difficulty difficulty : Difficulty.values()) {
+            int maxStars = challengesByDiff.getOrDefault(difficulty, List.of()).size() * 3;
+            int earnedStars = earnedMap.getOrDefault(difficulty, 0);
             summary.put(difficulty, new DifficultyStarSummary(earnedStars, maxStars));
         }
 
         return summary;
     }
+
 
 
 }

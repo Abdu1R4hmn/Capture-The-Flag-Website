@@ -2,6 +2,7 @@ package com.example.springboot.User;
 
 
 import com.example.springboot.Progress.Progress;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -12,6 +13,7 @@ import lombok.*;
 
 import com.example.springboot.Role.Role;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -44,8 +46,8 @@ public class User{
     @Column(nullable = false)
     private Role role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Progress> progressList;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Progress> progressList = new ArrayList<>();
 
     private LocalDateTime regDateAndTime;
 

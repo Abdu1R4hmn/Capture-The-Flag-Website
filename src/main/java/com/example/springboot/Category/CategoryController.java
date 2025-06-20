@@ -50,6 +50,13 @@ public class CategoryController {
         return categoryService.getCategoryType(type);
     }
 
+    // GET by type with challenge count
+    @GetMapping("/get/type/with-challenge-count/{type}")
+    public ResponseEntity<ApiResponseDto<CategoryChallengeCountDTO>> getCategoryChallengeCountByType(@PathVariable("type") String type) throws CategoryNotFoundException {
+        return categoryService.getCategoryChallengeCountByType(type);
+    }
+
+
     //    POST category
     @PostMapping("/post")
     public ResponseEntity<ApiResponseDto<?>> postCategory(@Valid @RequestBody CategoryDTO categoryDto) throws CategoryAlreadyExistsException {

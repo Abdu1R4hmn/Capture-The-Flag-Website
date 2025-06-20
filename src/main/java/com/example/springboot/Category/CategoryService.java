@@ -75,6 +75,17 @@ public class CategoryService {
         return ResponseEntity.ok(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), convertToDto(category)));
     }
 
+    public ResponseEntity<ApiResponseDto<CategoryChallengeCountDTO>> getCategoryChallengeCountByType(String type) throws CategoryNotFoundException {
+        CategoryChallengeCountDTO dto = categoryRepo.fetchCategoryChallengeCountByType(type);
+        if (dto == null) {
+            throw new CategoryNotFoundException("Category not found with type: " + type);
+        }
+
+        return ResponseEntity.ok(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), dto));
+    }
+
+
+
     public ResponseEntity<ApiResponseDto<?>> postCategory(CategoryDTO categoryDto) throws CategoryAlreadyExistsException {
         if (categoryRepo.findByType(categoryDto.getType()) != null) {
             throw new CategoryAlreadyExistsException("Category already exists with type: " + categoryDto.getType());

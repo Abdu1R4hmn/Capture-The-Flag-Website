@@ -214,9 +214,14 @@ public class ChallengeService {
                 challenge.setChallengeImage(challengeDto.getChallengeImage());
             }
 
-            if(challengeDto.getCategory() != null){
+            if(challengeDto.getCategory() != null) {
                 challenge.setCategory(challengeDto.getCategory());
             }
+
+            if (challengeDto.getDifficulty() != null) {
+                challenge.setDifficulty(challengeDto.getDifficulty());
+            }
+            
 
             if(challengeDto.getHint1() != null){
                 challenge.setHint1(challengeDto.getHint1());

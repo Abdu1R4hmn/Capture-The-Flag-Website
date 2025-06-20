@@ -54,8 +54,13 @@ public class FeedbackService {
     }
 
     public ResponseEntity<ApiResponseDto<?>> addFeedback(FeedbackDTO dto, Long challengeId) throws ChallengeNotFoundException {
+
+        if (dto.getComment() == null || dto.getComment().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(new ApiResponseDto<>(ApiResponseStatus.FAIL.name(), "Comment cannot be empty."));
+        }
+
         Challenge challenge = challengeRepo.findById(challengeId)
-                .orElseThrow(() -> new ChallengeNotFoundException("Challenge not found with ID: " + dto.getChallengeName()));
+                .orElseThrow(() -> new ChallengeNotFoundException("Challenge not found with ID: " + challengeId));
 
         Feedback feedback = new Feedback();
         feedback.setComment(dto.getComment());

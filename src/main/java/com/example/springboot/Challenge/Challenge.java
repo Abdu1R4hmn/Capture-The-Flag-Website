@@ -3,6 +3,7 @@ package com.example.springboot.Challenge;
 import com.example.springboot.Category.Category;
 import com.example.springboot.Feedback.Feedback;
 import com.example.springboot.Progress.Progress;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -51,9 +53,13 @@ public class Challenge {
     private byte[] challengeImage;
 
 //    Relationships
+    @JsonIgnore
+    @OneToMany(mappedBy = "challenge", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Progress> progresses = new ArrayList<>();
 
     @ManyToOne
     private Category category;
+
 
     @OneToMany(mappedBy = "challenge", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Feedback> feedback;

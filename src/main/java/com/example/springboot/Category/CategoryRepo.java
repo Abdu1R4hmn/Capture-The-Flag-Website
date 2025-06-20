@@ -24,4 +24,14 @@ public interface CategoryRepo extends JpaRepository<Category, Long> {
     @Query(value = "SELECT COUNT(*) FROM category", nativeQuery = true)
     int countAllCategories();  // This gives you the total number of categories, not challenges.
 
+    @Query(value = """
+    SELECT c.id AS id, c.type AS type, COUNT(ch.id) AS totalChallenges
+    FROM category c
+    LEFT JOIN challenge ch ON c.id = ch.category_id
+    WHERE c.type = :type
+    GROUP BY c.id, c.type
+    """, nativeQuery = true)
+    CategoryChallengeCountDTO fetchCategoryChallengeCountByType(@Param("type") String type);
+
+
 }
