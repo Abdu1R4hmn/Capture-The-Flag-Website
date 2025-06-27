@@ -8,6 +8,8 @@ import com.example.springboot.User.UserService;
 import com.example.springboot.exceptions.userException.UserNotFoundException;
 import com.example.springboot.responses.ApiResponseDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,32 +27,35 @@ public class ProgressController {
         this.userService = userService;
     }
 
+    @PreAuthorize("hasAnyRole('USER','LECTURER','ADMIN')")
     @GetMapping("/get")
-    public List<ProgressDTO> getSolvedProgressByEmail(@RequestParam String email) throws UserNotFoundException {
+    public List<ProgressDTO> getSolvedProgressByUser(Authentication authentication) throws UserNotFoundException {
+        String email = authentication.getName();
         User user = userService.getUserByEmail(email);
         return progressService.getSolvedProgressByUser(user);
     }
 
+    @PreAuthorize("hasAnyRole('USER','LECTURER','ADMIN')")
     @GetMapping("/get/{diff}")
     public ResponseEntity<ApiResponseDto<List<ProgressDTO>>> getSolvedChallengesByDifficulty(
             @PathVariable("diff") Difficulty diff,
-            @RequestParam("email") String email
+            Authentication authentication
     ) throws UserNotFoundException {
-        User user = userService.getUserByEmail(email); // Make sure this exists
+        String email = authentication.getName();
+        User user = userService.getUserByEmail(email);
 
         List<ProgressDTO> list = progressService.getSolvedChallengesByDifficulty(user, diff);
         return ResponseEntity.ok(new ApiResponseDto<>("SUCCESS", list));
     }
 
+    @PreAuthorize("hasAnyRole('USER','LECTURER','ADMIN')")
     @GetMapping("/stars/summary/full")
     public ResponseEntity<ApiResponseDto<Map<Difficulty, DifficultyStarSummary>>> getFullStarSummary(
-            @RequestParam("email") String email
+            Authentication authentication
     ) throws UserNotFoundException {
+        String email = authentication.getName();
         User user = userService.getUserByEmail(email);
         Map<Difficulty, DifficultyStarSummary> summary = progressService.getStarSummaryPerDifficulty(user);
         return ResponseEntity.ok(new ApiResponseDto<>("SUCCESS", summary));
     }
-
-
-
 }

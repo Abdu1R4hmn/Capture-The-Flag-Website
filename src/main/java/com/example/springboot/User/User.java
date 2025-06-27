@@ -3,6 +3,7 @@ package com.example.springboot.User;
 
 import com.example.springboot.Progress.Progress;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -37,9 +38,10 @@ public class User{
     @Email
     private String email;
 
-    @NotBlank
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$")
-    @Size(min = 8)
+//    @NotBlank
+//    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$")
+//    @Size(min = 8)
+    @Column(nullable= true)
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -71,7 +73,7 @@ public class User{
         this.username = username;
         this.email = email;
         this.password = password;
-        this.role = Role.USER;
+        this.role = Role.ROLE_USER;
     }
 
 

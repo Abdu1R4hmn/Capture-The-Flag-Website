@@ -1,6 +1,7 @@
 package com.example.springboot.User;
 
 import com.example.springboot.Progress.Progress;
+import com.example.springboot.Role.Role;
 import com.example.springboot.exceptions.userException.UserAlreadyExistsException;
 import com.example.springboot.exceptions.userException.UserNotFoundException;
 import com.example.springboot.exceptions.userException.UserServiceLogicException;
@@ -13,20 +14,21 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
 
 @Service
 public class UserService {
-
     //  Variables
     private final UserRepo userRepo;
+    private final PasswordEncoder passwordEncoder; // Add this
 
     //  Constructor
-    public UserService(UserRepo userRepo) {
+    public UserService(UserRepo userRepo, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
+        this.passwordEncoder = passwordEncoder; // Add this
     }
 
     //   DTO
@@ -114,26 +116,50 @@ public class UserService {
         return user;
     }
 
+    public ResponseEntity<ApiResponseDto<?>> editProfile(UserProfileEditDto dto, String email) throws UserNotFoundException {
+        User user = userRepo.findByEmail(email);
+        if (user == null) throw new UserNotFoundException("User not found");
+
+        if (dto.getUsername() != null) user.setUsername(dto.getUsername());
+        if (dto.getEmail() != null) user.setEmail(dto.getEmail());
+
+        if (dto.getOldPassword() != null && dto.getNewPassword() != null) {
+            // Use passwordEncoder to check old password
+            if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
+                throw new RuntimeException("Old password does not match");
+            }
+            user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        }
+
+        userRepo.save(user);
+        return ResponseEntity.ok(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), "Profile updated successfully"));
+    }
+
+
     //   POST/Add User.
     public ResponseEntity<ApiResponseDto<?>> addUser(UserRequestDto newUser) throws UserAlreadyExistsException, UserServiceLogicException {
         try {
-
             if (userRepo.findByEmail(newUser.getEmail()) != null) {
                 throw new UserAlreadyExistsException("Registration failed: User already exists with email " + newUser.getEmail());
             }
 
-//            Attaching Progress for new user.
-            User user = new User(
-                    newUser.getUsername(),
-                    newUser.getEmail(),
-                    newUser.getPassword(),
-                    newUser.getRole()
-            );
+            // Hash the password before saving
+            String hashedPassword = passwordEncoder.encode(newUser.getPassword());
 
+            // Use the role from the DTO, default to ROLE_USER if null
+            Role role = newUser.getRole() != null ? newUser.getRole() : Role.ROLE_USER;
+
+            User user = new User(
+                newUser.getUsername(),
+                newUser.getEmail(),
+                hashedPassword,
+                role
+            );
 
             userRepo.save(user);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), "New user account has been successfully created!"));
+            return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), "New user account has been successfully created!"));
 
         } catch (UserAlreadyExistsException e) {
             throw new UserAlreadyExistsException(e.getMessage());
@@ -160,8 +186,8 @@ public class UserService {
             if(user.getEmail() != null) {
                 orginalUser.setEmail(user.getEmail());
             }
-            if (user.getPassword() != null) {
-                orginalUser.setPassword(user.getPassword());
+            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+                orginalUser.setPassword(passwordEncoder.encode(user.getPassword()));
             }
 
             if (user.getRole() != null) {
@@ -198,6 +224,14 @@ public class UserService {
             throw new UserServiceLogicException();
         }
 
+    }
+
+    public ResponseEntity<ApiResponseDto<?>> deleteUserByEmail(String email) throws UserNotFoundException, UserServiceLogicException {
+        User user = userRepo.findByEmail(email);
+        if (user == null) throw new UserNotFoundException("User not found with email: " + email);
+
+        userRepo.delete(user);
+        return ResponseEntity.ok(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), "User account deleted successfully!"));
     }
 
 //      GET TOTAL NUMBER OF USERS
