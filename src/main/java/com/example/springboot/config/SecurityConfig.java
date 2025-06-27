@@ -16,15 +16,14 @@ import jakarta.servlet.http.HttpServletResponse; // For Spring Boot 3+ (Jakarta 
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final CustomOAuth2UserService customOAuth2UserService;
+    // private final CustomOAuth2UserService customOAuth2UserService;
 
-    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService) {
-        this.customOAuth2UserService = customOAuth2UserService;
-    }
+    // public SecurityConfig(CustomOAuth2UserService customOAuth2UserService) {
+    //     this.customOAuth2UserService = customOAuth2UserService;
+    // }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        System.out.println("SecurityFilterChain loaded!");
         http
             .cors(org.springframework.security.config.Customizer.withDefaults())
             .authorizeHttpRequests(auth -> auth
@@ -35,6 +34,8 @@ public class SecurityConfig {
                     "/oauth2/**", "/login/**",
                     "/api/auth/login"
                 ).permitAll()
+                .requestMatchers("/api/user/auth/forgot-password").permitAll()
+                .requestMatchers("/api/user/test-mailtrap").permitAll()
 
                 // Allow USER, LECTURER, ADMIN to access these two endpoints
                 .requestMatchers("/api/challenge/solve/**").hasAnyRole("USER", "LECTURER", "ADMIN")
@@ -65,9 +66,10 @@ public class SecurityConfig {
                 // Any other request must be authenticated
                 .anyRequest().authenticated()
             )
-            .oauth2Login(oauth2 -> oauth2
-                .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-            )
+            // .oauth2Login(oauth2 -> oauth2
+            //     .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+            //     .defaultSuccessUrl("http://localhost:5173/login", true)
+            // )
             .formLogin(form -> form.disable()) // Use your custom /api/auth/login endpoint
             .logout(logout -> logout
                 .logoutUrl("/perform_logout")
@@ -77,6 +79,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint((request, response, authException) -> {
+                    
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.setContentType("application/json");
                     response.getWriter().write("{\"error\": \"Unauthorized\"}");

@@ -5,13 +5,18 @@ import com.example.springboot.exceptions.userException.UserAlreadyExistsExceptio
 import com.example.springboot.exceptions.userException.UserNotFoundException;
 import com.example.springboot.exceptions.userException.UserServiceLogicException;
 import com.example.springboot.responses.ApiResponseDto;
+import com.example.springboot.responses.ApiResponseStatus;
+import com.example.springboot.util.EmailService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication; // <-- Use this import
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/user")
@@ -19,10 +24,12 @@ public class UserController {
 
     //  Variables
     private final UserService userService;
+    private final EmailService mailService;
 
     //  Constructor
-    public UserController(UserService userService){
+    public UserController(UserService userService, EmailService mailService) {
         this.userService = userService;
+        this.mailService = mailService;
     }
 
 //    CRUD
@@ -82,7 +89,7 @@ public class UserController {
     }
 
     //   Delete any user (ADMIN only)
-    @PreAuthorize("hasRole('ADMIN', 'LECTURER', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LECTURER', 'USER')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ApiResponseDto<?>> deleteUserById(@PathVariable("id") long id) throws UserNotFoundException, UserServiceLogicException {
         return userService.deleteUser(id);
@@ -110,4 +117,18 @@ public class UserController {
         String email = authentication.getName();
         return userService.getUserEmail(email);
     }
+
+    //   Forgot Password (Public)
+    @PostMapping("/auth/forgot-password")
+    public ResponseEntity<ApiResponseDto<?>> forgotPassword(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        try {
+            userService.resetPasswordAndSendEmail(email);
+            return ResponseEntity.ok(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), "If this email exists, a reset link has been sent."));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ApiResponseDto<>(ApiResponseStatus.FAIL.name(), "User doesn't exist"));
+        }
+    }
+
 }

@@ -7,6 +7,7 @@ import com.example.springboot.exceptions.userException.UserNotFoundException;
 import com.example.springboot.exceptions.userException.UserServiceLogicException;
 import com.example.springboot.responses.ApiResponseDto;
 import com.example.springboot.responses.ApiResponseStatus;
+import com.example.springboot.util.EmailService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 //import org.springframework.data.domain.Pageable;
@@ -16,7 +17,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.security.SecureRandom;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -24,11 +30,13 @@ public class UserService {
     //  Variables
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder; // Add this
+    private final EmailService emailService; // Add this
 
     //  Constructor
-    public UserService(UserRepo userRepo, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepo userRepo, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder; // Add this
+        this.emailService = emailService; // Add this
     }
 
     //   DTO
@@ -77,6 +85,7 @@ public class UserService {
         } catch (UserNotFoundException e) {
             throw new UserNotFoundException(e.getMessage());
         } catch (Exception e) {
+            e.printStackTrace(); // Add this line for debugging
             throw new UserServiceLogicException();
         }
     }
@@ -103,6 +112,7 @@ public class UserService {
         } catch (UserNotFoundException e) {
             throw new UserNotFoundException(e.getMessage());
         } catch (Exception e) {
+            e.printStackTrace(); // Add this line for debugging
             throw new UserServiceLogicException();
         }
     }
@@ -172,10 +182,9 @@ public class UserService {
     //   EDIT/Put User.
     public ResponseEntity<ApiResponseDto<?>> updateUser(UserEditDto user, long id) throws UserAlreadyExistsException, UserNotFoundException, UserServiceLogicException {
         try {
-
             User existingUser = userRepo.findByEmail(user.getEmail());
             if (existingUser != null && existingUser.getId() != id) {
-                throw new UserAlreadyExistsException("Update failed: Another user already exists with email " + user.getEmail());
+                throw new UserAlreadyExistsException("User already exists with email " + user.getEmail());
             }
 
             User orginalUser = userRepo.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with id " + id));
@@ -189,7 +198,6 @@ public class UserService {
             if (user.getPassword() != null && !user.getPassword().isEmpty()) {
                 orginalUser.setPassword(passwordEncoder.encode(user.getPassword()));
             }
-
             if (user.getRole() != null) {
                 orginalUser.setRole(user.getRole());
             }
@@ -200,10 +208,9 @@ public class UserService {
 
         } catch (UserNotFoundException e) {
             throw new UserNotFoundException(e.getMessage());
-        } catch (UserAlreadyExistsException e) {
-            throw new UserAlreadyExistsException(e.getMessage());
-        }catch (Exception e) {
-            throw new UserServiceLogicException();
+        } catch (Exception e) {
+            // Pass the exception message to UserServiceLogicException
+            throw new UserServiceLogicException(e.getMessage() != null ? e.getMessage() : "Something went wrong. Please try again later!");
         }
     }
 
@@ -221,7 +228,8 @@ public class UserService {
         } catch (UserNotFoundException e) {
             throw new UserNotFoundException(e.getMessage());
         } catch (Exception e) {
-            throw new UserServiceLogicException();
+            // Pass the exception message to UserServiceLogicException
+            throw new UserServiceLogicException(e.getMessage() != null ? e.getMessage() : "Something went wrong. Please try again later!");
         }
 
     }
@@ -237,5 +245,45 @@ public class UserService {
 //      GET TOTAL NUMBER OF USERS
     public long totalUsers() {
         return userRepo.findAll().stream().count();
+    }
+
+    public void resetPasswordAndSendEmail(String email) throws UserNotFoundException {
+        Optional<User> userOpt = userRepo.findByEmailIgnoreCase(email);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            String newPassword = generateRandomPassword(8);
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepo.save(user);
+            String subject = "Your new password";
+            String message = "Your new password is: " + newPassword + "\nPlease change it after logging in.";
+            System.out.println("Sending email to: " + user.getEmail());
+            emailService.sendSimpleMessage(user.getEmail(), subject, message);
+        } else {
+            throw new UserNotFoundException("User doesn't exist");
+        }
+    }
+
+    private String generateRandomPassword(int length) {
+        String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lower = "abcdefghijklmnopqrstuvwxyz";
+        String digits = "0123456789";
+        String all = upper + lower + digits;
+        Random random = new SecureRandom();
+        StringBuilder sb = new StringBuilder();
+
+        // Ensure at least one of each
+        sb.append(upper.charAt(random.nextInt(upper.length())));
+        sb.append(lower.charAt(random.nextInt(lower.length())));
+        sb.append(digits.charAt(random.nextInt(digits.length())));
+
+        for (int i = 3; i < length; i++) {
+            sb.append(all.charAt(random.nextInt(all.length())));
+        }
+        // Shuffle
+        List<Character> pwdChars = sb.chars().mapToObj(c -> (char) c).collect(Collectors.toList());
+        Collections.shuffle(pwdChars, random);
+        StringBuilder password = new StringBuilder();
+        pwdChars.forEach(password::append);
+        return password.toString();
     }
 }
