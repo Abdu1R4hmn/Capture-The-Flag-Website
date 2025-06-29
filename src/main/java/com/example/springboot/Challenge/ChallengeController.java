@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.util.List;
@@ -120,6 +121,33 @@ public class ChallengeController {
         String email = authentication.getName(); // This is the logged-in user's email
         User user = userService.getUserByEmail(email);
         return challengeService.solveChallenge(challengeId, dto, user);
+    }
+
+    @PostMapping("/{id}/image")
+    public ResponseEntity<?> uploadChallengeImage(@PathVariable Long id, @RequestParam("image") MultipartFile image) {
+        try {
+            String msg = challengeService.uploadChallengeImage(id, image);
+            return ResponseEntity.ok(msg);
+        } catch (ChallengeNotFoundException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("Image upload failed: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/image")
+    public ResponseEntity<byte[]> getChallengeImage(@PathVariable Long id) {
+        try {
+            byte[] image = challengeService.getChallengeImage(id);
+            if (image == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok()
+                .header("Content-Type", "image/jpeg")
+                .body(image);
+        } catch (ChallengeNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
 

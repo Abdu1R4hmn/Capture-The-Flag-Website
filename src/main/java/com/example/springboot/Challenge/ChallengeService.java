@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.example.springboot.Category.CategoryRepo;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -180,20 +181,22 @@ public class ChallengeService {
                 throw new ChallengeAlreadyExistsException("Challenge with the same name already exists!");
             }
 
-//        Get Category
+            // Get Category
             Category category = categoryRepo.findById(catid).orElseThrow(() -> new ChallengeNotFoundException("Category not found with ID: " + catid));
-//         Attach category
+            // Attach category
             challengeDto.setCategory(category);
 
             Challenge challenge = convertToEntity(challengeDto);
 
             challengeRepo.save(challenge);
+
+            // Return the DTO with the generated ID
+            ChallengeDTO responseDto = convertToDto(challenge);
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), "Challenge created successfully!"));
+                    .body(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), responseDto));
         } catch (ChallengeAlreadyExistsException | ChallengeNotFoundException e) {
             throw e;
         } catch (Exception e) {
-
             throw new ChallengeServiceLogicException("Failed to create challenge");
         }
     }
@@ -332,4 +335,21 @@ public class ChallengeService {
         }
     }
 
+    public String uploadChallengeImage(Long id, MultipartFile image) throws ChallengeNotFoundException {
+        Challenge challenge = challengeRepo.findById(id)
+            .orElseThrow(() -> new ChallengeNotFoundException("Challenge not found"));
+        try {
+            challenge.setChallengeImage(image.getBytes());
+            challengeRepo.save(challenge);
+            return "Image uploaded successfully!";
+        } catch (Exception e) {
+            throw new RuntimeException("Image upload failed: " + e.getMessage());
+        }
+    }
+
+    public byte[] getChallengeImage(Long id) throws ChallengeNotFoundException {
+        Challenge challenge = challengeRepo.findById(id)
+            .orElseThrow(() -> new ChallengeNotFoundException("Challenge not found"));
+        return challenge.getChallengeImage();
+    }
 }
