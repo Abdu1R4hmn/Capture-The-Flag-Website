@@ -48,6 +48,11 @@ public class Challenge {
     @NotBlank(message = "Hints must be provided.")
     private String hint2;
 
+    @NotBlank(message = "Solution must be provided.")
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String solution;
+
     @Lob
     @Column(name = "ChallengeImage")
     private byte[] challengeImage;
@@ -65,7 +70,7 @@ public class Challenge {
     private List<Feedback> feedback;
 
 
-    public Challenge(String name, String description, Difficulty difficulty, String flag, byte[] challengeImage, Category category, String hint1, String hint2) {
+    public Challenge(String name, String description, Difficulty difficulty, String flag, byte[] challengeImage, Category category, String hint1, String hint2, String solution) {
         this.name = name;
         this.description = description;
         this.difficulty = difficulty;
@@ -74,6 +79,7 @@ public class Challenge {
         this.category = category;
         this.hint1 = hint1;
         this.hint2 = hint2;
+        this.solution = solution;
     }
 
 }

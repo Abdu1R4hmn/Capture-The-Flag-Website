@@ -1,6 +1,8 @@
 package com.example.springboot.Challenge;
 
 import com.example.springboot.Category.Category;
+
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -13,6 +15,8 @@ public class ChallengePublicDTO {
     private String name;
 
     private String description;
+
+    private String solution;
 
     private Difficulty difficulty;
 

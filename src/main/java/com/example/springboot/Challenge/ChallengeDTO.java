@@ -25,6 +25,9 @@ public class ChallengeDTO {
     @Lob
     private String description;
 
+    // @NotBlank(message = "Solution must be provided.")
+    private String solution;
+
     @Lob
     @Column(name = "ChallengeImage")
     private byte[] challengeImage;

@@ -5,7 +5,6 @@ import com.example.springboot.Progress.Progress;
 import com.example.springboot.Progress.ProgressDTO;
 import com.example.springboot.Progress.ProgressRepo;
 import com.example.springboot.User.User;
-import com.example.springboot.exceptions.categoryException.ResourceNotFoundException;
 import com.example.springboot.exceptions.challengeException.ChallengeServiceLogicException;
 import com.example.springboot.responses.ApiResponseDto;
 import com.example.springboot.responses.ApiResponseStatus;
@@ -39,17 +38,30 @@ public class ChallengeService {
 
     //    DTOs
     public ChallengeDTO convertToDto(Challenge challenge){
-        return new ChallengeDTO(challenge.getId(), challenge.getName(),challenge.getDescription(),challenge.getChallengeImage(), challenge.getDifficulty(),challenge.getFlag(),challenge.getFeedback(),challenge.getCategory(),challenge.getHint1(),challenge.getHint2());
+        return new ChallengeDTO(
+            challenge.getId(),
+            challenge.getName(),
+            challenge.getDescription(),
+            challenge.getSolution(),
+            challenge.getChallengeImage(),
+            challenge.getDifficulty(),
+            challenge.getFlag(),
+            challenge.getFeedback(),
+            challenge.getCategory(),
+            challenge.getHint1(),
+            challenge.getHint2()// <-- add this
+        );
     }
 
     public ChallengePublicDTO convertToPublicDto(Challenge challenge){
-        return new ChallengePublicDTO( challenge.getId(),challenge.getName(),challenge.getDescription(),challenge.getDifficulty(), challenge.getChallengeImage(),challenge.getCategory(),challenge.getHint1(),challenge.getHint2());
+        return new ChallengePublicDTO( challenge.getId(),challenge.getName(),challenge.getDescription(),challenge.getSolution(),challenge.getDifficulty(), challenge.getChallengeImage(),challenge.getCategory(),challenge.getHint1(),challenge.getHint2());
     }
 
     public Challenge convertToEntity(ChallengeDTO dto) {
         Challenge challenge = new Challenge(
-                dto.getName(), dto.getDescription(), dto.getDifficulty(), dto.getFlag(), dto.getChallengeImage(), dto.getCategory(), dto.getHint1(), dto.getHint2()
+                dto.getName(), dto.getDescription(), dto.getDifficulty(), dto.getFlag(),dto.getChallengeImage(), dto.getCategory(), dto.getHint1(), dto.getHint2(), dto.getSolution()
         );
+        // challenge.setSolution(dto.getSolution()); // <-- Ensure this line exists
         return challenge;
     }
 
@@ -229,6 +241,10 @@ public class ChallengeService {
 
             if(challengeDto.getHint2() != null){
                 challenge.setHint2(challengeDto.getHint2());
+            }
+
+            if(challengeDto.getSolution() != null) {
+                challenge.setSolution(challengeDto.getSolution());
             }
 
             //  Update category
