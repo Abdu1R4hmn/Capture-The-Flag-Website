@@ -54,7 +54,7 @@ public class Challenge {
     private String solution;
 
     @Lob
-    @Column(name = "challenge_image", columnDefinition = "LONGBLOB")
+    @Column(name = "challenge_image")
     private byte[] challengeImage;
 
 //    Relationships

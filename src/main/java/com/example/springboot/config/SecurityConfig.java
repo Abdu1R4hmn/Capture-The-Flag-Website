@@ -27,6 +27,8 @@ public class SecurityConfig {
         http
             .cors(org.springframework.security.config.Customizer.withDefaults())
             .authorizeHttpRequests(auth -> auth
+                // Allow preflight OPTIONS requests
+                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                 // Public endpoints
                 .requestMatchers(
                     "/", "/login", "/register", "/css/**", "/js/**", "/images/**",
@@ -104,9 +106,35 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
+        
+        // Allow multiple origins for development and production
         config.addAllowedOrigin("http://localhost:5173");
+        config.addAllowedOrigin("https://localhost:5173");
+        config.addAllowedOrigin("https://ctf.jibna.live");
+        config.addAllowedOriginPattern("https://*.ctf.jibna.live");
+        config.addAllowedOriginPattern("https://*.cloudflareaccess.com");
+        config.addAllowedOriginPattern("https://*.trycloudflare.com");
+        config.addAllowedOriginPattern("https://*.ngrok.io");
+        config.addAllowedOriginPattern("https://*.ngrok-free.app");
+        // Allow any HTTPS origin for development (remove in production)
+        config.addAllowedOriginPattern("https://*");
+        
+        // Allow all headers and methods
         config.addAllowedHeader("*");
         config.addAllowedMethod("*"); // This allows PATCH, PUT, DELETE, etc.
+        
+        // Expose headers that might be needed
+        config.addExposedHeader("Authorization");
+        config.addExposedHeader("Content-Type");
+        config.addExposedHeader("X-Requested-With");
+        config.addExposedHeader("Accept");
+        config.addExposedHeader("Origin");
+        config.addExposedHeader("Access-Control-Request-Method");
+        config.addExposedHeader("Access-Control-Request-Headers");
+        
+        // Set max age for preflight requests
+        config.setMaxAge(3600L);
+        
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
