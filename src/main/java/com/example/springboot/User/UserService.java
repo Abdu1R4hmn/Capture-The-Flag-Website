@@ -174,7 +174,7 @@ public class UserService {
         } catch (UserAlreadyExistsException e) {
             throw new UserAlreadyExistsException(e.getMessage());
         } catch (Exception e) {
-            throw new UserServiceLogicException();
+            throw new UserServiceLogicException(e.getMessage() != null ? e.getMessage() : "Unknown error occurred during registration.");
         }
 
     }

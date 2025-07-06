@@ -62,21 +62,24 @@ public class CategoryController {
     //    POST category (Lecturer, Admin)
     @PreAuthorize("hasAnyRole('LECTURER','ADMIN')")
     @PostMapping("/post")
-    public ResponseEntity<ApiResponseDto<?>> postCategory(@Valid @RequestBody CategoryDTO categoryDto) throws CategoryAlreadyExistsException {
+    public ResponseEntity<ApiResponseDto<?>> postCategory(@Valid @RequestBody CategoryDTO categoryDto) 
+    throws CategoryAlreadyExistsException {
         return categoryService.postCategory(categoryDto);
     }
 
     //    Edit category (Lecturer, Admin)
     @PreAuthorize("hasAnyRole('LECTURER','ADMIN')")
     @PatchMapping("/put/{id}")
-    public ResponseEntity<ApiResponseDto<?>> putCategory(@Valid @RequestBody CategoryDTO categoryDto, @PathVariable("id") long id) throws CategoryNotFoundException, CategoryAlreadyExistsException {
+    public ResponseEntity<ApiResponseDto<?>> putCategory(@Valid @RequestBody CategoryDTO categoryDto, 
+    @PathVariable("id") long id) throws CategoryNotFoundException, CategoryAlreadyExistsException {
         return categoryService.putCategory(categoryDto, id);
     }
 
     //    Delete category (Lecturer, Admin)
     @PreAuthorize("hasAnyRole('LECTURER','ADMIN')")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ApiResponseDto<?>> deleteCategory(@PathVariable("id") long id) throws CategoryNotFoundException {
+    public ResponseEntity<ApiResponseDto<?>> deleteCategory(@PathVariable("id") long id) throws 
+    CategoryNotFoundException {
         return categoryService.deleteCategory(id);
     }
 

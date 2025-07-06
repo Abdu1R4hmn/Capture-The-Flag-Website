@@ -38,6 +38,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/user/test-mailtrap").permitAll()
 
                 // Allow USER, LECTURER, ADMIN to access these two endpoints
+                .requestMatchers("/api/challenge/**").hasAnyRole("USER", "LECTURER", "ADMIN")
+
                 .requestMatchers("/api/challenge/solve/**").hasAnyRole("USER", "LECTURER", "ADMIN")
                 .requestMatchers("/api/challenge/get/public/all").hasAnyRole("USER", "LECTURER", "ADMIN")
                 .requestMatchers("/api/category/get/all/with-challenge-counts").hasAnyRole("USER", "LECTURER", "ADMIN")
@@ -66,10 +68,6 @@ public class SecurityConfig {
                 // Any other request must be authenticated
                 .anyRequest().authenticated()
             )
-            // .oauth2Login(oauth2 -> oauth2
-            //     .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-            //     .defaultSuccessUrl("http://localhost:5173/login", true)
-            // )
             .formLogin(form -> form.disable()) // Use your custom /api/auth/login endpoint
             .logout(logout -> logout
                 .logoutUrl("/perform_logout")

@@ -38,20 +38,20 @@ public class User{
     @Email
     private String email;
 
-//    @NotBlank
-//    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$")
-//    @Size(min = 8)
-    @Column(nullable= true)
+    // @NotBlank
+    // @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$")
+    // @Size(min = 8)
     private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
-
+    
+    private LocalDateTime regDateAndTime;
+    
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Progress> progressList = new ArrayList<>();
 
-    private LocalDateTime regDateAndTime;
 
 
     public User(String username, String email, String password, Role role, List<Progress> progressList) {

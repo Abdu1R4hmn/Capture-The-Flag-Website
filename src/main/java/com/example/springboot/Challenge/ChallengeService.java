@@ -280,7 +280,7 @@ public class ChallengeService {
         }
     }
 
-    //      GET TOTAL NUMBER OF USERS
+    //      GET TOTAL NUMBER OF Challenges
     public long totalChallenges() {
         return challengeRepo.findAll().stream().count();
     }

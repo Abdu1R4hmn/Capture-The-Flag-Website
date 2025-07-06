@@ -10,7 +10,7 @@ import com.example.springboot.util.EmailService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.core.Authentication; // <-- Use this import
+import org.springframework.security.core.Authentication;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,18 +54,7 @@ public class UserController {
     public ResponseEntity<ApiResponseDto<UserResponseDto>> getUserEmail(@PathVariable("email")String email) throws UserNotFoundException, UserServiceLogicException {
         return userService.getUserEmail(email);
     }
-
-    //  Edit own profile (User, Lecturer, Admin)
-    @PreAuthorize("hasAnyRole('USER','LECTURER','ADMIN')")
-    @PatchMapping("/profile/edit")
-    public ResponseEntity<ApiResponseDto<?>> editProfile(
-            @Valid @RequestBody UserProfileEditDto dto,
-            Authentication authentication
-    ) throws UserNotFoundException {
-        String email = authentication.getName();
-        return userService.editProfile(dto, email);
-    }
-
+    
     //   POST/Add User. (Admin only)
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(path = "post")
@@ -79,13 +68,32 @@ public class UserController {
     public ResponseEntity<ApiResponseDto<?>> updateUser(@Valid @RequestBody UserEditDto user,@PathVariable("id")long id) throws UserAlreadyExistsException, UserNotFoundException, UserServiceLogicException {
         return userService.updateUser(user, id);
     }
-
+    
+    //  Edit own profile (User, Lecturer, Admin)
+    @PreAuthorize("hasAnyRole('USER','LECTURER','ADMIN')")
+    @PatchMapping("/profile/edit")
+    public ResponseEntity<ApiResponseDto<?>> editProfile(
+            @Valid @RequestBody UserProfileEditDto dto,
+            Authentication authentication
+    ) throws UserNotFoundException {
+        String email = authentication.getName();
+        return userService.editProfile(dto, email);
+    }
+    
     //   Delete own account (User, Lecturer, Admin)
     @PreAuthorize("hasAnyRole('USER','LECTURER','ADMIN')")
     @DeleteMapping("/delete")
     public ResponseEntity<ApiResponseDto<?>> deleteCurrentUser(Authentication authentication) throws UserNotFoundException, UserServiceLogicException {
         String email = authentication.getName();
         return userService.deleteUserByEmail(email);
+    }
+
+    //   Get own profile (User, Lecturer, Admin)
+    @PreAuthorize("hasAnyRole('USER','LECTURER','ADMIN')")
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponseDto<UserResponseDto>> getMyProfile(Authentication authentication) throws UserNotFoundException, UserServiceLogicException {
+        String email = authentication.getName();
+        return userService.getUserEmail(email);
     }
 
     //   Delete any user (ADMIN only)
@@ -105,18 +113,11 @@ public class UserController {
 
     //   Register User. (Public)
     @PostMapping("/register")
-    public ResponseEntity<ApiResponseDto<?>> registerUser(@RequestBody UserRequestDto newUser)
+    public ResponseEntity<ApiResponseDto<?>> registerUser(@Valid @RequestBody UserRequestDto newUser)
             throws UserAlreadyExistsException, UserServiceLogicException {
         return userService.addUser(newUser);
     }
 
-    //   Get own profile (User, Lecturer, Admin)
-    @PreAuthorize("hasAnyRole('USER','LECTURER','ADMIN')")
-    @GetMapping("/me")
-    public ResponseEntity<ApiResponseDto<UserResponseDto>> getMyProfile(Authentication authentication) throws UserNotFoundException, UserServiceLogicException {
-        String email = authentication.getName();
-        return userService.getUserEmail(email);
-    }
 
     //   Forgot Password (Public)
     @PostMapping("/auth/forgot-password")

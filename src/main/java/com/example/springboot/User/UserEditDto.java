@@ -25,7 +25,7 @@ public class UserEditDto {
     @Email(message = "Email is not in valid format!")
     private String email;
 
-//    @NotBlank(message = "Password is required!")
+    @NotBlank(message = "Password is required!")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$",
             message = "Password must contain 1 Uppercase letter, 1 Lowercase letter and 1 Number")
     @Size(min = 8, message = "Password must contain at least 8 characters!")

@@ -78,7 +78,7 @@ public class FeedbackService {
         return ResponseEntity.ok(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), "Feedback deleted."));
     }
 
-
+    // Count total feedbacks
     public Long getTotal() {
         Long count = feedbackRepo.findAll().stream().count();
         return count;

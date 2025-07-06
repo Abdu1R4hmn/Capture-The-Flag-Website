@@ -17,15 +17,16 @@ public class FeedbackController {
         this.feedbackService = feedbackService;
     }
 
-    // Admin: Get all feedbacks
+    //Lecturer: Get all feedbacks
     @GetMapping("/get/all")
     public ResponseEntity<ApiResponseDto<List<FeedbackDTO>>> getAllFeedbacks(int page, int size) {
         return feedbackService.getAllFeedbacks(page, size);
     }
 
-    // Get feedbacks for a specific challenge
+    // Lecturer: Get feedbacks for a specific challenge
     @GetMapping("/get/challenge/{challengeName}")
-    public ResponseEntity<ApiResponseDto<List<FeedbackDTO>>> getFeedbacksByChallenge(@PathVariable String challengeName) throws ChallengeNotFoundException {
+    public ResponseEntity<ApiResponseDto<List<FeedbackDTO>>> getFeedbacksByChallenge(@PathVariable String challengeName) 
+    throws ChallengeNotFoundException {
         return feedbackService.getFeedbacksByChallengeId(challengeName);
     }
 

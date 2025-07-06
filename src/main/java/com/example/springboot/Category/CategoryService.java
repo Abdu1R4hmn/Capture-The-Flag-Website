@@ -117,6 +117,7 @@ public class CategoryService {
         return ResponseEntity.ok(new ApiResponseDto<>(ApiResponseStatus.SUCCESS.name(), "Category deleted successfully!"));
     }
 
+    // Count total categories
     public long totalCategory() {
         return categoryRepo.findAll().size();
     }

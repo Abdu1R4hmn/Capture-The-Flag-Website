@@ -80,17 +80,19 @@ public class ChallengeController {
         return challengeService.getChallengeName(name);
     }
 
-    //    Post challenge. (Lecturer, Admin)
+    //    Post challenge. (Lecturer)
     @PreAuthorize("hasAnyRole('LECTURER','ADMIN')")
     @PostMapping("/post/{catid}")
-    public ResponseEntity<ApiResponseDto<?>> postChallenge(@RequestBody ChallengeDTO challengeDto, @PathVariable("catid") long catid) throws ChallengeAlreadyExistsException, ChallengeNotFoundException {
+    public ResponseEntity<ApiResponseDto<?>> postChallenge(@RequestBody ChallengeDTO challengeDto,
+    @PathVariable("catid") long catid) throws ChallengeAlreadyExistsException, ChallengeNotFoundException {
         return challengeService.postChallenge(challengeDto,catid);
     }
 
     //    Edit challenge (Lecturer, Admin)
     @PreAuthorize("hasAnyRole('LECTURER','ADMIN')")
     @PatchMapping("/put/{id}")
-    public ResponseEntity<ApiResponseDto<?>> putChallenge(@RequestBody ChallengeDTO challengeDto,@PathVariable("id") long id,@RequestParam long catid) throws ChallengeNotFoundException, ChallengeAlreadyExistsException {
+    public ResponseEntity<ApiResponseDto<?>> putChallenge(@RequestBody ChallengeDTO challengeDto,@PathVariable("id") long id,
+    @RequestParam long catid) throws ChallengeNotFoundException, ChallengeAlreadyExistsException {
         return challengeService.putChallenge(challengeDto,id, catid);
     }
 
@@ -118,7 +120,7 @@ public class ChallengeController {
             @RequestBody ChallengeSolveRequestDTO dto,
             Authentication authentication) throws UserNotFoundException, UserServiceLogicException, ChallengeNotFoundException {
 
-        String email = authentication.getName(); // This is the logged-in user's email
+        String email = authentication.getName();
         User user = userService.getUserByEmail(email);
         return challengeService.solveChallenge(challengeId, dto, user);
     }
