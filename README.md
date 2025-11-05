@@ -28,7 +28,7 @@ A beginner-friendly web-based platform designed to help cybersecurity students b
 <br>
 
 <p align="center">
-  <img src="assets/screens/Raw/profile.png" width="600px"/><br>
+  <img src="assets/screens/Raw/adminDash.png" width="600px"/><br>
   <i>Profile Overview</i>
 </p>
 
@@ -164,17 +164,18 @@ npm run dev
 
 <p align="center"><img src="assets/screens/Manual/home.png" width="600px"/><br><i>Home</i></p>
 <p align="center"><img src="assets/screens/Manual/login.png" width="600px"/><br><i>Login</i></p>
-<p align="center"><img src="assets/screens/Manual/signup.png" width="600px"/><br><i>Signup</i></p>
+<p align="center"><img src="assets/screens/Manual/signin.png" width="600px"/><br><i>Signup</i></p>
 <p align="center"><img src="assets/screens/Manual/profile.png" width="600px"/><br><i>Profile</i></p>
 <p align="center"><img src="assets/screens/Manual/profile2.png" width="600px"/><br><i>Edit Profile</i></p>
-<p align="center"><img src="assets/screens/Manual/resetPassword.png" width="600px"/><br><i>Reset Password</i></p>
+<p align="center"><img src="assets/screens/Manual/resetPass.png" width="600px"/><br><i>Reset Password</i></p>
 
 ### 🧩 Challenge Screens
 
 <p align="center"><img src="assets/screens/Manual/challenge.png" width="600px"/><br><i>Challenges</i></p>
+<p align="center"><img src="assets/screens/Manual/challengeFilter.png" width="600px"/><br><i>Challenge Filter</i></p>
 <p align="center"><img src="assets/screens/Manual/challengeDetails.png" width="600px"/><br><i>Challenge Details</i></p>
-<p align="center"><img src="assets/screens/Manual/hint.png" width="600px"/><br><i>Hint</i></p>
-<p align="center"><img src="assets/screens/Manual/solution.png" width="600px"/><br><i>Solution</i></p>
+<p align="center"><img src="assets/screens/Manual/submitFeedback.png" width="600px"/><br><i>Submit Feedback</i></p>
+
 
 ### 🔐 Admin Screens
 
