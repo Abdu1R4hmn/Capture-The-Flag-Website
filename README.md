@@ -15,9 +15,22 @@ A beginner-friendly web-based platform designed to help cybersecurity students b
 <details>
 <summary><strong>Click to view demo preview</strong></summary><br>
 
-<img src="assets/screens/Raw/home.png" width="600px"/><br><br>
-<img src="assets/screens/Raw/challenge.png" width="600px"/><br><br>
-<img src="assets/screens/Raw/profile.png" width="600px"/>
+<p align="center">
+  <img src="assets/screens/Raw/home.png" width="600px"/><br>
+  <i>Home Screen</i>
+</p>
+<br>
+
+<p align="center">
+  <img src="assets/screens/Raw/challenge.png" width="600px"/><br>
+  <i>Challenges Preview</i>
+</p>
+<br>
+
+<p align="center">
+  <img src="assets/screens/Raw/profile.png" width="600px"/><br>
+  <i>Profile Overview</i>
+</p>
 
 </details>
 
@@ -30,7 +43,7 @@ A beginner-friendly web-based platform designed to help cybersecurity students b
 - [Technology Stack](#-technology-stack)
 - [Getting Started](#-getting-started)
 - [Usage](#-usage)
-- [Testing](#-testing-overview)
+- [Testing Overview](#-testing-overview)
 - [Screenshots & User Manual](#-screenshots--user-manual)
 - [Roadmap / Future Enhancements](#-roadmap--future-enhancements)
 - [License](#-license)
@@ -64,7 +77,10 @@ This platform provides a secure and structured learning environment where studen
 
 The platform follows a **REST‑based MVC architecture**, ensuring modularity and scalability.
 
-<img src="assets/architecture_diagram.png" width="650px"/>
+<p align="center">
+  <img src="assets/architecture_diagram.png" width="650px"/><br>
+  <i>System Architecture Overview</i>
+</p>
 
 ---
 
@@ -145,27 +161,31 @@ npm run dev
 <summary><strong>Click to Expand Full User Manual</strong></summary><br>
 
 ### ✅ User Screens
-- Home — `assets/screens/Manual/home.png`  
-- Login — `assets/screens/Manual/login.png`  
-- Signup — `assets/screens/Manual/signup.png`  
-- Profile — `assets/screens/Manual/profile.png`  
-- Manage Profile — `assets/screens/Manual/profile2.png`  
-- Reset Password — `assets/screens/Manual/resetPassword.png`  
+
+<p align="center"><img src="assets/screens/Manual/home.png" width="600px"/><br><i>Home</i></p>
+<p align="center"><img src="assets/screens/Manual/login.png" width="600px"/><br><i>Login</i></p>
+<p align="center"><img src="assets/screens/Manual/signup.png" width="600px"/><br><i>Signup</i></p>
+<p align="center"><img src="assets/screens/Manual/profile.png" width="600px"/><br><i>Profile</i></p>
+<p align="center"><img src="assets/screens/Manual/profile2.png" width="600px"/><br><i>Edit Profile</i></p>
+<p align="center"><img src="assets/screens/Manual/resetPassword.png" width="600px"/><br><i>Reset Password</i></p>
 
 ### 🧩 Challenge Screens
-- Challenges — `assets/screens/Manual/challenge.png`  
-- Challenge Details — `assets/screens/Manual/challengeDetails.png`  
-- Hint — `assets/screens/Manual/hint.png`  
-- Solution — `assets/screens/Manual/solution.png`  
+
+<p align="center"><img src="assets/screens/Manual/challenge.png" width="600px"/><br><i>Challenges</i></p>
+<p align="center"><img src="assets/screens/Manual/challengeDetails.png" width="600px"/><br><i>Challenge Details</i></p>
+<p align="center"><img src="assets/screens/Manual/hint.png" width="600px"/><br><i>Hint</i></p>
+<p align="center"><img src="assets/screens/Manual/solution.png" width="600px"/><br><i>Solution</i></p>
 
 ### 🔐 Admin Screens
-- Admin Dashboard — `assets/screens/Manual/adminDash.png`  
-- User Management — `assets/screens/Manual/userDash.png`  
+
+<p align="center"><img src="assets/screens/Manual/adminDash.png" width="600px"/><br><i>Admin Dashboard</i></p>
+<p align="center"><img src="assets/screens/Manual/userDash.png" width="600px"/><br><i>User Management</i></p>
 
 ### 🎓 Lecturer Screens
-- Category Management — `assets/screens/Manual/categoryDash.png`  
-- Challenge Management — `assets/screens/Manual/challengeDash.png`  
-- Feedback Management — `assets/screens/Manual/feedbackDash.png`  
+
+<p align="center"><img src="assets/screens/Manual/categoryDash.png" width="600px"/><br><i>Category Management</i></p>
+<p align="center"><img src="assets/screens/Manual/challengeDash.png" width="600px"/><br><i>Challenge Management</i></p>
+<p align="center"><img src="assets/screens/Manual/feedbackDash.png" width="600px"/><br><i>Feedback Management</i></p>
 
 </details>
 
