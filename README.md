@@ -15,7 +15,7 @@ A beginner-friendly web-based platform designed to help cybersecurity students b
 <details>
 <summary><strong>Click to view demo preview</strong></summary><br>
 
-<img src="assets/screens/raw/home.png" width="600px"/><br><br>
+<img src="assets/screens/Manual/adminDash.png" width="600px"/><br><br>
 <img src="assets/screens/raw/challenge.png" width="600px"/><br><br>
 <img src="assets/screens/raw/profile.png" width="600px"/>
 
