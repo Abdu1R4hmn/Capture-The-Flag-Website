@@ -21,13 +21,14 @@ A beginner-friendly web-based CTF platform designed to improve cybersecurity pra
 ---
 
 ## About the Project
-Cybersecurity threats continue to increase, yet beginners have limited safe and accessible platforms to develop practical skills.  
-This project introduces a Capture The Flag (CTF) learning system with:
-- Progressive beginner-focused challenges
-- Secure user authentication and role-based features
-- Continuous challenge improvement through user feedback
 
-The platform is intended for cybersecurity education, especially at UTM (Universiti Teknologi Malaysia).
+Cybercrime cases continue to rise globally, yet beginners often lack a safe and accessible environment to learn cybersecurity practically.  
+This project addresses that challenge by providing a structured learning platform where users complete ethical hacking challenges to build foundational skills.  
+The focus is to provide:
+
+- Beginner-friendly cybersecurity challenges  
+- Practical exposure to security concepts  
+- A safe platform for learning ethical hacking techniques  
 
 ---
 
@@ -57,23 +58,13 @@ Role-based access:
 
 ## Technology Stack
 
-### Frontend
-- React.js
-- Axios
-
-### Backend
-- Spring Boot (Java)
-- Spring Security
-- BCrypt password hashing
-
-### Database
-- MySQL
-
-### Tools
-- IntelliJ IDEA
-- VS Code
-- GitHub
-- Figma / PlantUML (Design)
+| Layer | Technology |
+|-------|------------|
+| Frontend | React.js, Axios |
+| Backend | Spring Boot, Spring Security |
+| Database | MySQL |
+| Development Tools | IntelliJ IDEA, VS Code, GitHub |
+| Design Tools | Figma, PlantUML |
 
 ---
 
@@ -86,13 +77,6 @@ Role-based access:
 /assets/screens/profile.png
 /assets/screens/admin-dashboard.png
 ```
-
-Example placeholders:
-
-- Registration Page  
-- Challenge Listings Page  
-- Profile Page  
-- Admin Dashboard  
 
 ---
 
@@ -111,8 +95,8 @@ Ensure the following are installed:
 
 #### 1️⃣ Clone Repository
 ```bash
-git clone https://github.com/<your-username>/<repo-name>.git
-cd <repo-name>
+git clone https://github.com/Abdu1R4hmn/Capture-The-Flag-Website.git
+cd Capture-The-Flag-Website
 ```
 
 #### 2️⃣ Backend Setup
@@ -135,11 +119,11 @@ mvn spring-boot:run
 ```bash
 cd frontend
 npm install
-npm start
+npm run dev
 ```
 
 The app should run at:  
-Frontend → `http://localhost:3000`  
+Frontend → `http://localhost:5173`  
 Backend API → `http://localhost:8080`
 
 ---
@@ -171,14 +155,12 @@ Performed testing types:
 ---
 
 ## License
-This project is intended for **educational use only**.  
-(You can add MIT License or others later.)
+This project is intended for **educational use only**.
 
 ---
 
 ## Author
 **Abdulrahman Osama**  
 Capture The Flag Web Platform Developer  
-Universiti Teknologi Malaysia  
 
 ---
