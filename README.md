@@ -71,7 +71,6 @@ Role-based access:
 
 ### Prerequisites
 Ensure the following are installed:
-- Node.js (v16+)
 - Java JDK 17+
 - MySQL Server
 - Git
@@ -134,7 +133,6 @@ Performed testing types:
 ---
 
 ## Roadmap / Future Enhancements
-- Additional challenge categories (Web, Forensics, OSINT)
 - Leaderboard and gamification
 - OAuth2 login flow
 - Improved analytics for instructors
