@@ -15,9 +15,9 @@ A beginner-friendly web-based platform designed to help cybersecurity students b
 <details>
 <summary><strong>Click to view demo preview</strong></summary><br>
 
-<img src="assets/screens/Manual/adminDash.png" width="600px"/><br><br>
-<img src="assets/screens/raw/challenge.png" width="600px"/><br><br>
-<img src="assets/screens/raw/profile.png" width="600px"/>
+<img src="assets/screens/Raw/home.png" width="600px"/><br><br>
+<img src="assets/screens/Raw/challenge.png" width="600px"/><br><br>
+<img src="assets/screens/Raw/profile.png" width="600px"/>
 
 </details>
 
@@ -145,27 +145,27 @@ npm run dev
 <summary><strong>Click to Expand Full User Manual</strong></summary><br>
 
 ### ✅ User Screens
-- Home — `assets/screens/manual/home.png`  
-- Login — `assets/screens/manual/login.png`  
-- Signup — `assets/screens/manual/signup.png`  
-- Profile — `assets/screens/manual/profile.png`  
-- Manage Profile — `assets/screens/manual/profile2.png`  
-- Reset Password — `assets/screens/manual/resetPassword.png`  
+- Home — `assets/screens/Manual/home.png`  
+- Login — `assets/screens/Manual/login.png`  
+- Signup — `assets/screens/Manual/signup.png`  
+- Profile — `assets/screens/Manual/profile.png`  
+- Manage Profile — `assets/screens/Manual/profile2.png`  
+- Reset Password — `assets/screens/Manual/resetPassword.png`  
 
 ### 🧩 Challenge Screens
-- Challenges — `assets/screens/manual/challenge.png`  
-- Challenge Details — `assets/screens/manual/challengeDetails.png`  
-- Hint — `assets/screens/manual/hint.png`  
-- Solution — `assets/screens/manual/solution.png`  
+- Challenges — `assets/screens/Manual/challenge.png`  
+- Challenge Details — `assets/screens/Manual/challengeDetails.png`  
+- Hint — `assets/screens/Manual/hint.png`  
+- Solution — `assets/screens/Manual/solution.png`  
 
 ### 🔐 Admin Screens
-- Admin Dashboard — `assets/screens/manual/adminDash.png`  
-- User Management — `assets/screens/manual/userDash.png`  
+- Admin Dashboard — `assets/screens/Manual/adminDash.png`  
+- User Management — `assets/screens/Manual/userDash.png`  
 
 ### 🎓 Lecturer Screens
-- Category Management — `assets/screens/manual/categoryDash.png`  
-- Challenge Management — `assets/screens/manual/challengeDash.png`  
-- Feedback Management — `assets/screens/manual/feedbackDash.png`  
+- Category Management — `assets/screens/Manual/categoryDash.png`  
+- Challenge Management — `assets/screens/Manual/challengeDash.png`  
+- Feedback Management — `assets/screens/Manual/feedbackDash.png`  
 
 </details>
 
