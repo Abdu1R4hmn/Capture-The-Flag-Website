@@ -1,0 +1,126 @@
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-box {
+  background: #fff;
+  border-radius: 0.5rem;
+  padding: 2rem;
+  width: 90%;
+  max-width: 50rem;
+  max-height: 90vh;
+  height: auto;
+  position: relative;
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.4);
+
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  border: none;
+  background: transparent;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.challenge-header h2{
+    margin-bottom: 0.6rem;
+}
+
+.challenge-image {
+  width: 100%;
+  max-height: 250px;
+  object-fit: contain;
+  /* margin: 1rem 0; */
+}
+
+.description {
+  margin: 1rem 0;
+}
+.details{
+    margin-top: 0.4rem;
+}
+
+.details p {
+  margin: 0.3rem 0;
+}
+
+.flag-submit {
+  gap: 1rem;
+  width: 100%;
+  display: flex;
+    flex-direction: column;
+}
+
+.flag-submit input {
+  flex: 1;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+    transition: 0.3s border;
+}
+
+.flag-submit input:hover {
+    border-color: #63e1a8;
+}
+
+
+.flag-submit .green {
+  background-color: #63e1a8;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 0.3rem;
+  cursor: pointer;
+}
+.hint-buttons {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+  align-items: center;
+}
+
+.hint-btn {
+  background-color: #b7f1d4;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.hint-btn:hover {
+  background-color: #63e1a8;
+}
+
+.hint-text {
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.reveal-btn {
+  background-color: #b7f1d4;
+  color: #222;
+  font-weight: bold;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reveal-btn:hover {
+  background-color: #63e1a8;
+  color: #222;
+}

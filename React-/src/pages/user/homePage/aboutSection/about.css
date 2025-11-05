@@ -1,0 +1,39 @@
+
+.about-Section{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    
+}
+
+.about{
+    display: flex;
+    align-items: center;
+    /* height: 12rem; */
+}
+
+.goal{
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+    /* height: 12rem; */
+    
+}
+
+.aboutHeader{
+    width: 50%;
+    font-size: 1.2rem;
+    
+    
+}
+
+.aboutSubtext{
+    width: 50%;
+    background-color: #E3F9ED;
+    padding: 6rem 1rem;
+    font-size: 1.2rem;
+}
+
+.aboutSubtext > p{
+    margin: 0rem 1rem;
+}

@@ -1,0 +1,143 @@
+.active{
+    background-color: #B7F1D4;
+}
+
+nav{
+    position: sticky;
+    top: 0;
+    background-color: white;
+    min-height: 6rem;
+    z-index: 99;
+    
+}
+
+.nav-bar{
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+    padding: 1rem 3.2rem;
+    box-shadow: 0px 4px 10px 2px rgb(0, 0, 0,0.2);
+}
+
+.nav-brand{
+    display: flex;
+    align-items: center;
+}
+
+.nav-brand > img{
+    max-width: 4rem;
+}
+
+.nav-brand h3{
+    margin-left: 2rem;
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.nav-brand img,h3:hover{
+    cursor: pointer;
+}
+
+.nav-tabs {
+    display: flex;
+    font-size: 1.2rem;
+    letter-spacing: 0.08rem;
+    align-items: center;
+}
+
+.nav-tabs > ul {
+    display: flex;
+    list-style-type: none;
+}
+
+a{
+    text-decoration: none;
+    color: black;
+}
+
+.nav-tabs > ul > li >a {
+    margin: 0rem 1.4rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: 0.2s ease-in;
+}
+
+.nav-tabs > ul > li > a:not(.active):hover {
+    background-color: #B7F1D4;
+    cursor: pointer;
+    
+}
+
+.Hamburger-nav{
+    display: none;
+}
+
+@media screen and (max-width: 1345px) {
+
+    .nav-bar{
+        position: sticky;
+
+    }
+    .nav-tabs{
+        flex-direction: column;
+        background-color: rgba(0, 0, 0, 0.601);
+        position: fixed;
+        text-align: center;
+        width: 20rem;
+        top: 6rem;
+        right: -100%;
+        transition: 0.3s ease-in-out;  
+        padding: 3rem;
+        height: 100%;
+    }
+
+    .nav-tabs.activated{
+        right: 0;
+    }
+
+    .nav-tabs > ul{
+        flex-direction: column;
+    }
+
+    .nav-tabs > ul > li{
+        margin: 1.5rem 0rem;
+        
+    }
+
+    .nav-tabs > ul > li > a:not(.active) {
+        color:#B7F1D4;
+    }
+    
+    .nav-tabs > ul > li > a:hover {
+        padding: 1rem ;
+        color: black;
+    }
+
+    .button {
+        margin: 2rem 0rem;
+    }
+
+    .Hamburger-nav{
+        display: block;
+    }
+
+    .Hamburger-nav:hover{
+        cursor: pointer;
+    }
+
+    .Hamburger-nav > img{
+        width: 3.5rem;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .nav-bar{
+        padding: 1rem 1rem;
+    }
+    
+    .nav-brand > h3{
+        font-size: 1.3rem;
+        margin-left: 1rem;
+    }
+
+}

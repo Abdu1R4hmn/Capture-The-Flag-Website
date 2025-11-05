@@ -1,0 +1,273 @@
+.admin-layout {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 5rem;
+}
+
+.upper-part {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0rem 0.5rem 2rem 0.5rem;
+}
+
+.upper-part p{
+  font-size: 2.5rem;
+}
+
+.AddNew button{
+  padding: 0.8rem;
+}
+
+.search{
+  display: flex;
+  align-items: center;
+}
+
+.search input{
+  min-width: 20rem;
+  height: 2.7rem;
+  padding: 0.4rem 2rem;
+  border: 0.15rem solid black;
+  border-radius: 0.3rem;
+  background-color: #f2f2f2;
+  font-size: 1.2rem;
+  margin-right: 0.3rem;
+  transition: 0.1s ease-in;
+
+}
+
+.search input:hover{
+  border-color: #63E1A8;
+  background-color: white;
+}
+
+.search img{
+  min-width: 2rem;
+  cursor: pointer;
+  transition: 0.1s ease-in;
+
+}
+
+.search img:hover{
+  margin-bottom: 0.2rem;
+}
+
+.search button{
+  background: none;
+  border: none;
+}
+
+.data-table {
+  overflow-x: auto;
+}
+
+.data-table table{
+  width: 100%;
+  table-layout: auto;
+  border-collapse: collapse;
+  box-shadow: 0px 2px 5px 1px rgb(0, 0, 0,0.2);
+}
+
+/* Add borders to table, th, and td */
+.data-table table,
+.data-table th,
+.data-table td {
+  border: 1px solid #ccc;
+}
+
+/* Optional: Remove double border on outer edge */
+.data-table table {
+  border-collapse: collapse;
+}
+
+.data-table tr th{
+  padding: 1.7rem 1.5rem;
+  text-align: left;
+  background-color: #63E1A8;
+  font-size: 1.2rem;
+}
+
+.data-table tr td{
+  padding: 1rem 1.5rem;
+}
+
+
+.data-table tr:nth-child(even){
+  background-color: #f2f2f2;
+}
+
+.data-table tr:hover{
+  background-color: #ddd;
+}
+
+/* Remove global truncation from all cells */
+.data-table td, .data-table th {
+  max-width: none;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+}
+
+/* Only truncate these columns */
+.data-table td.truncate {
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.data-table td.truncate.description { max-width: 260px; }
+.data-table td.truncate.solution { max-width: 220px; }
+
+/* Let all other columns wrap text and have no max-width */
+.data-table td:not(.truncate),
+.data-table th {
+  white-space: normal;
+  max-width: none;
+  overflow: visible;
+  text-overflow: unset;
+}
+
+/* Actions column: keep wide enough for buttons */
+.data-table td:last-child,
+.data-table th:last-child {
+  min-width: 140px;
+  white-space: nowrap;
+}
+
+button{
+  margin: 0.2rem;
+}
+
+.red{
+  background-color: red;
+  color: white;
+}
+.red:hover{
+  background-color: white;
+  color: red;
+}
+
+.green:hover{
+background-color: black;
+color: #63E1A8;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  width: 30rem;
+}
+
+.modal h2 {
+  margin-bottom: 1rem;
+}
+
+.modal p{
+  /* width: 40%; */
+  margin-bottom: 0.5rem;
+  color: red;
+}
+
+.modal input, .modal select {
+ 
+  margin: 0.6rem 0;
+  width: 70%;
+  padding: 0.6rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  width: 60%;
+  margin-top: 0.8rem;
+}
+
+.pagination {
+  display: flex;
+  /* justify-content: end; */
+  gap: 1rem;
+  margin-top: 1.5rem;
+  align-items: center;
+}
+
+.pagination button {
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination span{
+  font-weight: 600;
+}
+
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  text-align: center;
+  padding: 2rem;
+}
+
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ccc;
+  border-top-color: #00c853;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin-bottom: 1rem;
+}
+
+.styled-dropdown {
+  padding: 0.5rem 1rem;
+  margin-left: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: white;
+  font-size: 1.5rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.styled-dropdown:focus,
+.styled-dropdown:hover {
+  border-color: #00c853;
+  outline: none;
+}
+
+
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+

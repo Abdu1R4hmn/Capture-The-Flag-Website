@@ -1,0 +1,19 @@
+TODO:
+
+    Dynamic Navbar. pass props to Navbar (title: .., address:..).
+
+    Profile Page. just a drop down card.
+
+    Dynamic Challege Card. pass nessacery props.
+    
+    Login/Signup Changes. login button changes to profile after authentication.
+
+    Challenge Filtering.
+    
+    Challenge Progress.
+
+THINGS I SHOULD HAVE TURNED TO COMPONENTS:
+
+    search box.
+
+    Pagination.

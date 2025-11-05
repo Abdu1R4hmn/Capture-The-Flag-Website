@@ -1,0 +1,50 @@
+.feedback-modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.feedback-modal-box {
+  position: relative; /* important for close button */
+  background: #fff;
+  padding: 2rem;
+  border-radius: 0.6rem;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+
+.feedback-modal-box textarea {
+  width: 100%;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0.4rem;
+  border: 1px solid #ccc;
+  resize: vertical;
+}
+
+.feedback-modal-box .green {
+  background-color: #63e1a8;
+  padding: 0.6rem 1.4rem;
+  border: none;
+  border-radius: 0.3rem;
+  cursor: pointer;
+}
+
+.feedback-close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+

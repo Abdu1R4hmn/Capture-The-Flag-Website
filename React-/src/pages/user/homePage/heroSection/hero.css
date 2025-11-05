@@ -1,0 +1,104 @@
+.Hero-Section{
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row-reverse;
+    overflow: hidden;
+    margin-top: 3rem;
+    min-height: 50rem;
+}
+
+.Hero-Text{
+    margin: 2rem 4rem;
+    /* display: flex;
+    flex-direction: column;
+    justify-content: start; */
+}
+
+.Hero-Header{
+    font-size: 2.5rem;
+}
+
+.Hero-Subtext {
+    margin-top: 6rem;
+}
+
+.Hero-Subtext > h3{
+    text-decoration: underline;
+    cursor: initial;
+    margin: 0rem 0rem 1.4rem 0rem;
+    font-size: 2rem;
+}
+
+.Hero-Subtext > p{
+    max-width: 40rem;
+    font-size: 1.3rem;
+    text-align: justify;
+}
+
+.Hero-Image > img{
+    max-width: 40rem;
+    margin-right: 2rem;
+    margin-top: 2rem;
+}
+
+
+@media screen and (max-width: 1300px) {
+
+    .Hero-Section{
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .Hero-Image{
+        position: absolute;
+        z-index: -99;
+        opacity: 60%;
+        top: 7rem;
+        /* right: 0rem; */
+    }
+    .Hero-Image > img{
+        margin: 0rem;
+
+    }
+
+    .Hero-Subtext{
+        margin-top: 8rem;
+        text-align: center; 
+    }
+
+    .Hero-Subtext > p{
+        max-width: 40rem;
+        
+    }
+}
+
+@media screen and (max-width: 660px) {
+    
+
+    .Hero-Image{
+        top: 14rem;
+    }
+
+    .Hero-Image > img {
+        width: 23rem;
+    }
+    .Hero-Text{
+        margin: 1rem;
+        flex-direction: column;
+    }
+    
+     .Hero-Header{
+        font-size: 1.4rem;
+    } 
+    .Hero-Subtext{
+        margin-top: 6rem;
+    }
+    .Hero-Subtext > h3 {
+        font-size: 1.4rem;
+    }
+
+    .Hero-Subtext > p {
+        font-size: 1rem;
+        max-width: 20rem;
+    } 
+}

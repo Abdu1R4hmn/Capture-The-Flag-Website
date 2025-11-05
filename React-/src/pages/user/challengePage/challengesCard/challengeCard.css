@@ -1,0 +1,100 @@
+.challenge-page-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.challengeCard-Section{
+    display: flex;
+    justify-content: start;
+    flex-wrap: wrap;
+    margin: 1rem 0rem;
+    width: 100%;
+
+}
+
+.Card{
+    border: solid 0.05em black;
+    box-shadow: 0.2rem 0.2rem 0.4rem rgba(0, 0, 0, 0.393);
+    background-color: #B7F1D4;
+    border-radius: 0.5rem;
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+    padding: 1rem;
+    margin: 1rem;
+    width: 15rem;
+    height: 15rem;
+}
+
+.Card:hover{
+    opacity: 60%;
+    cursor: pointer;
+}
+
+.cat-Diff{
+    display: flex;
+    justify-content: space-between;
+}
+
+.card-Title{
+    font-size: 0.7rem;
+    margin: 1rem 0rem;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.card-Title > h1{
+    width: max-content;
+}
+
+.overflowing > h1{
+    animation: textLoop 10s linear infinite;  
+}
+
+.nooverflow{
+    align-self: center;
+}
+
+.star-progress{
+    margin-bottom: 1rem;
+}
+.star-progress > p{
+    margin-bottom: 0.5rem;
+}
+
+.star-progress > img{
+    width: 3rem;
+}
+.star-progress > .Center{
+    width: 4.5rem;
+}
+
+
+
+
+@keyframes textLoop{
+    from{
+        transform: translate(0);
+    }
+
+    20%{
+        transform: translate(0);
+
+    }
+    100%{
+        transform: translate(-100%);
+    }
+
+    
+}
+
+@media screen and (max-width:700px) {
+    .challengeCard-Section{
+        justify-content: center;
+    }
+
+
+}
