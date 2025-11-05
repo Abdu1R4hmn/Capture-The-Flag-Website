@@ -15,9 +15,9 @@ A beginner-friendly web-based platform designed to help cybersecurity students b
 <details>
 <summary><strong>Click to view demo preview</strong></summary><br>
 
-<img src="assets/screens/home.png" width="600px"/><br><br>
-<img src="assets/screens/challenge.png" width="600px"/><br><br>
-<img src="assets/screens/profile.png" width="600px"/>
+<img src="assets/screens/raw/home.png" width="600px"/><br><br>
+<img src="assets/screens/raw/challenge.png" width="600px"/><br><br>
+<img src="assets/screens/raw/profile.png" width="600px"/>
 
 </details>
 
@@ -40,8 +40,8 @@ A beginner-friendly web-based platform designed to help cybersecurity students b
 
 ## 🧩 About the Project
 
-Cybercrime cases continue to rise globally, yet beginners often lack a safe and accessible environment to learn cybersecurity practically.  
-This project addresses that challenge by offering a safe and guided platform to build practical ethical hacking skills.
+Cybercrime continues to rise globally, yet beginners often lack a safe and accessible environment to learn cybersecurity practically.  
+This platform provides a secure and structured learning environment where students solve ethical hacking challenges to develop real-world security skills.
 
 ✅ Beginner‑friendly challenges  
 ✅ Practical exposure to security concepts  
@@ -62,24 +62,9 @@ This project addresses that challenge by offering a safe and guided platform to 
 
 ## 🧱 System Architecture
 
-The platform is designed using **REST‑based MVC architecture**, ensuring modularity and scalability.
+The platform follows a **REST‑based MVC architecture**, ensuring modularity and scalability.
 
-```mermaid
-flowchart LR
-UI[React Frontend] -->|HTTP/JSON| API[(Spring Boot API)]
-API -->|JPA| DB[(MySQL Database)]
-```
-
-### 🔐 Authentication Flow
-- Spring Security w/ JWT & role‑based access control
-- Secure password hashing (BCrypt)
-
-```mermaid
-flowchart TD
-User -->|Login| Auth[Spring Security]
-Auth -->|Valid| Grant[Access Granted by Role]
-Auth -->|Invalid| Denied[Access Denied]
-```
+<img src="assets/architecture_diagram.png" width="650px"/>
 
 ---
 
@@ -98,7 +83,6 @@ Auth -->|Invalid| Denied[Access Denied]
 ## 🚀 Getting Started
 
 ### ✅ Requirements
-- Node.js (v16+)
 - Java JDK 17+
 - MySQL Server
 - Git
@@ -116,11 +100,11 @@ cd Capture-The-Flag-Website
 cd backend
 mvn clean install
 ```
-Configure database in:
+Update DB settings in:
 ```
 src/main/resources/application.properties
 ```
-Then run backend:
+Run backend:
 ```bash
 mvn spring-boot:run
 ```
@@ -140,41 +124,48 @@ npm run dev
 1. Create account & log in
 2. Choose a challenge
 3. Submit flag to earn stars
-4. View completion progress
-5. Admin/Lecturer dashboard unlocked by roles
+4. Track progress in profile page
+5. Admin & Lecturer features visible when authorized
 
 ---
 
 ## 🧪 Testing Overview
 
-| Testing Type | Coverage |
-|--------------|----------|
-| White‑box | Backend logic, security testing |
-| Black‑box | UX + functional behavior |
-| UAT | Real user workflow testing |
+| Testing Type | Focus |
+|--------------|------|
+| White‑box | Backend logic + security evaluation |
+| Black‑box | Functional + UI behavior |
+| UAT | User workflow & experience testing |
 
 ---
 
 ## 🖼 Screenshots & User Manual
 
 <details>
-<summary><strong>Click to Expand</strong></summary>
+<summary><strong>Click to Expand Full User Manual</strong></summary><br>
 
-### User Interface
-- Login Page — `![](assets/screens/login.png)`  
-- Register Page — `![](assets/screens/register.png)`  
-- Challenges Page — `![](assets/screens/challenges.png)`  
-- Challenge Modal — `![](assets/screens/challenge-details.png)`  
-- Profile Page — `![](assets/screens/profile.png)`  
+### ✅ User Screens
+- Home — `assets/screens/manual/home.png`  
+- Login — `assets/screens/manual/login.png`  
+- Signup — `assets/screens/manual/signup.png`  
+- Profile — `assets/screens/manual/profile.png`  
+- Manage Profile — `assets/screens/manual/profile2.png`  
+- Reset Password — `assets/screens/manual/resetPassword.png`  
 
-### Admin Interface
-- Dashboard — `![](assets/screens/admin-dashboard.png)`  
-- User Management — `![](assets/screens/user-management.png)`  
+### 🧩 Challenge Screens
+- Challenges — `assets/screens/manual/challenge.png`  
+- Challenge Details — `assets/screens/manual/challengeDetails.png`  
+- Hint — `assets/screens/manual/hint.png`  
+- Solution — `assets/screens/manual/solution.png`  
 
-### Lecturer Interface
-- Category Management — `![](assets/screens/category-management.png)`  
-- Challenge Management — `![](assets/screens/challenge-management.png)`  
-- Feedback Management — `![](assets/screens/feedback-management.png)`  
+### 🔐 Admin Screens
+- Admin Dashboard — `assets/screens/manual/adminDash.png`  
+- User Management — `assets/screens/manual/userDash.png`  
+
+### 🎓 Lecturer Screens
+- Category Management — `assets/screens/manual/categoryDash.png`  
+- Challenge Management — `assets/screens/manual/challengeDash.png`  
+- Feedback Management — `assets/screens/manual/feedbackDash.png`  
 
 </details>
 
@@ -182,10 +173,9 @@ npm run dev
 
 ## 🔮 Roadmap / Future Enhancements
 
-- More challenge categories (Web, Forensics, OSINT)
 - Gamified XP, badges, leaderboard
 - OAuth2 login
-- Improved analytics for instructors
+- Enhanced analytics for instructors
 
 ---
 
